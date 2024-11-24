@@ -1,0 +1,6 @@
+@PaygenixProject_HostAddress = http://localhost:5136
+
+GET {{PaygenixProject_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
