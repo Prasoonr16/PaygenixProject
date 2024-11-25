@@ -20,5 +20,7 @@ namespace NewPayGenixAPI.DTO
         [Required(ErrorMessage = "RoleID is required.")]
         public int RoleID { get; set; } // ID of the role to assign to the user
 
+        // Employee-specific details are captured via EmployeeDTO
+        public EmployeeDTO EmployeeDetails { get; set; }
     }
 }

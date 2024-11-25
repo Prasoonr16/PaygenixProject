@@ -9,7 +9,7 @@ namespace NewPayGenixAPI.Controllers
 {
     [ApiController]
     [Route("api/payrollprocessor")]
-    //[Authorize(Roles = "PayrollProcessor")] // Only users with the "PayrollProcessor" role can access these endpoints
+    [Authorize(Roles = "PayrollProcessor")] // Only users with the "PayrollProcessor" role can access these endpoints
     public class PayrollProcessorController : ControllerBase
     {
         private readonly IPayrollProcessorRepository _payrollProcessorRepository;
@@ -28,7 +28,15 @@ namespace NewPayGenixAPI.Controllers
                 EmployeeID = payrollDto.EmployeeID,
                 BasicSalary = payrollDto.BasicSalary,
                 HRA = payrollDto.HRA,
+                LTA = payrollDto.LTA,
+                TravellingAllowance = payrollDto.TravellingAllowance,
+                DA = payrollDto.DA,
                 GrossPay = payrollDto.GrossPay,
+                PF = payrollDto.PF,
+                TDS = payrollDto.TDS,
+                ESI = payrollDto.ESI,
+                Deduction = payrollDto.Deduction,
+                TaxAmount = payrollDto.TaxAmount,
                 NetPay = payrollDto.NetPay,
                 StartPeriod = payrollDto.StartPeriod,
                 EndPeriod = payrollDto.EndPeriod,
