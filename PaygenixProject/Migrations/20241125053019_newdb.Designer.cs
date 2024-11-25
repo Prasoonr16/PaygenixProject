@@ -12,8 +12,8 @@ using NewPayGenixAPI.Data;
 namespace PaygenixProject.Migrations
 {
     [DbContext(typeof(PaygenixDBContext))]
-    [Migration("20241124184038_Add-Migration Test1")]
-    partial class AddMigrationTest1
+    [Migration("20241125053019_newdb")]
+    partial class newdb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -11,6 +11,7 @@ namespace NewPayGenixAPI.Repositories
         Task DeleteEmployeeAsync(int id);
         Task AssignRoleToUserAsync(int userId, int roleId);
 
+        Task<IEnumerable<User>> GetAllUserAsync();
         Task GeneratePayrollAsync(int employeeId);
         Task GenerateComplianceReportAsync(ComplianceReport report);
     }

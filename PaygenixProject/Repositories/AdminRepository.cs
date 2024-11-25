@@ -15,9 +15,12 @@ namespace NewPayGenixAPI.Repositories
 
             public async Task<IEnumerable<Employee>> GetAllEmployeesAsync()
             {
-                return await _context.Employees.Include(e => e.User).ToListAsync();
+                return await _context.Employees.ToListAsync();
             }
-
+            public async Task<IEnumerable<User>> GetAllUserAsync()
+            {
+                return await _context.Users.ToListAsync();
+            }
             public async Task<Employee> GetEmployeeByIdAsync(int id)
             {
                 return await _context.Employees.Include(e => e.User).FirstOrDefaultAsync(e => e.EmployeeID == id);

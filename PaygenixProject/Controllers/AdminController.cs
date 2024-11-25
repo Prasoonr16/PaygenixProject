@@ -26,6 +26,12 @@ namespace NewPayGenixAPI.Controllers
             var employees = await _adminRepository.GetAllEmployeesAsync();
             return Ok(employees);
         }
+        [HttpGet("user")]
+        public async Task<IActionResult> GetAllUser()
+        {
+            var user = await _adminRepository.GetAllUserAsync();
+            return Ok(user);
+        }
 
         [HttpGet("employee/{id}")]
         public async Task<IActionResult> GetEmployeeById(int id)

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PaygenixProject.Migrations
 {
     /// <inheritdoc />
-    public partial class AddMigrationTest1 : Migration
+    public partial class newdb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
