@@ -26,12 +26,7 @@ namespace NewPayGenixAPI.Controllers
             var employees = await _adminRepository.GetAllEmployeesAsync();
             return Ok(employees);
         }
-        [HttpGet("user")]
-        public async Task<IActionResult> GetAllUser()
-        {
-            var user = await _adminRepository.GetAllUserAsync();
-            return Ok(user);
-        }
+        
 
         [HttpGet("employee/{id}")]
         public async Task<IActionResult> GetEmployeeById(int id)
@@ -39,24 +34,6 @@ namespace NewPayGenixAPI.Controllers
             var employee = await _adminRepository.GetEmployeeByIdAsync(id);
             if (employee == null) return NotFound("Employee not found");
             return Ok(employee);
-        }
-
-        [HttpPost("employee")]
-        public async Task<IActionResult> AddEmployee([FromBody] EmployeeDTO employeeDto)
-        {
-            var employee = new Employee
-            {
-                FirstName = employeeDto.FirstName,
-                LastName = employeeDto.LastName,
-                Email = employeeDto.Email,
-                PhoneNumber = employeeDto.PhoneNumber,
-                Position = employeeDto.Position,
-                Department = employeeDto.Department,
-                HireDate = employeeDto.HireDate
-            };
-
-            await _adminRepository.AddEmployeeAsync(employee);
-            return CreatedAtAction(nameof(GetEmployeeById), new { id = employee.EmployeeID }, employee);
         }
 
         [HttpPut("employee/{id}")]
@@ -83,20 +60,85 @@ namespace NewPayGenixAPI.Controllers
             return Ok("Employee deleted successfully!");
         }
 
-        //// Manage User Roles
-        //[HttpPost("assign-role")]
-        //public async Task<IActionResult> AssignRoleToUser([FromBody] RoleAssignmentDTO roleAssignmentDto)
-        //{
-        //    await _adminRepository.AssignRoleToUserAsync(roleAssignmentDto.UserId, roleAssignmentDto.RoleId);
-        //    return Ok("Role assigned successfully");
-        //}
-
-        // Generate Payroll
-        [HttpPost("generate-payroll/{employeeId}")]
-        public async Task<IActionResult> GeneratePayroll(int employeeId)
+        [HttpGet("user")]
+        public async Task<IActionResult> GetAllUser()
         {
-            await _adminRepository.GeneratePayrollAsync(employeeId);
-            return Ok($"Payroll for Employee ID {employeeId} generated successfully.");
+            var user = await _adminRepository.GetAllUserAsync();
+            return Ok(user);
+        }
+
+        [HttpGet("user/{id}")]
+        public async Task<IActionResult> GetUserById(int id)
+        {
+            var user = await _adminRepository.GetUserByIdAsync(id);
+            if (user == null) return NotFound("User not found");
+            return Ok(user);
+        }
+
+        [HttpPut("user/{id}")]
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UserDTO userDTO)
+        {
+            var user = await _adminRepository.GetUserByIdAsync(id);
+            if (user == null) return NotFound("Employee not found");
+
+            user.UserID = userDTO.UserID;
+            user.Username = userDTO.Username;
+            user.RoleID = userDTO.RoleID;
+
+            await _adminRepository.UpdateUserAsync(user);
+            return Ok("User updated successfully!");
+        }
+
+        // Add Payroll
+        [HttpPost("add-payroll")]
+        public async Task<IActionResult> AddPayroll([FromBody] PayrollDTO payrollDto)
+        {
+            var payroll = new Payroll
+            {
+                EmployeeID = payrollDto.EmployeeID,
+                BasicSalary = payrollDto.BasicSalary,
+                HRA = payrollDto.HRA,
+                LTA = payrollDto.LTA,
+                TravellingAllowance = payrollDto.TravellingAllowance,
+                DA = payrollDto.DA,
+                GrossPay = payrollDto.GrossPay,
+                PF = payrollDto.PF,
+                TDS = payrollDto.TDS,
+                ESI = payrollDto.ESI,
+                Deduction = payrollDto.Deduction,
+                TaxAmount = payrollDto.TaxAmount,
+                NetPay = payrollDto.NetPay,
+                StartPeriod = payrollDto.StartPeriod,
+                EndPeriod = payrollDto.EndPeriod,
+                GeneratedDate = payrollDto.GeneratedDate
+            };
+
+            await _adminRepository.AddPayrollAsync(payroll);
+            return CreatedAtAction(nameof(AddPayroll), new { id = payroll.PayrollID }, payroll);
+        }
+        [HttpPut("payroll/{id}")]
+        public async Task<IActionResult> UpdatePayrollByEmployeeId(int id, [FromBody] PayrollDTO payrollDto)
+        {
+            var payroll = await _adminRepository.GetPayrollByEmployeeIdAsync(id);
+            if (payroll == null) return NotFound("Payroll not found");
+
+            payroll.BasicSalary = payrollDto.BasicSalary;
+            payroll.HRA = payrollDto.HRA;
+            payroll.LTA = payrollDto.LTA;
+            payroll.TravellingAllowance = payrollDto.TravellingAllowance;
+            payroll.DA = payrollDto.DA;
+            payroll.GrossPay = payrollDto.GrossPay;
+            payroll.PF = payrollDto.PF;
+            payroll.TDS = payrollDto.TDS;
+            payroll.ESI = payrollDto.ESI;
+            payroll.Deduction = payrollDto.Deduction;
+            payroll.TaxAmount = payrollDto.TaxAmount;
+            payroll.NetPay = payrollDto.NetPay;
+            payroll.StartPeriod = payrollDto.StartPeriod;
+            payroll.EndPeriod = payrollDto.EndPeriod;
+
+            await _adminRepository.UpdatePayrollAsync(payroll);
+            return Ok("Payroll updated successfully!");
         }
 
         // Generate Compliance Report
