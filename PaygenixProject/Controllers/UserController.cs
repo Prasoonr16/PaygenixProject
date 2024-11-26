@@ -40,7 +40,7 @@ namespace NewPayGenixAPI.Controllers
                 Username = registerDto.Username,
                 PasswordHash = registerDto.Password,
                 RoleID = registerDto.RoleID,
-                CreatedDate = DateTime.UtcNow
+                CreatedDate = DateTime.UtcNow,
             };
 
             // Save the user to the database
@@ -67,7 +67,7 @@ namespace NewPayGenixAPI.Controllers
                     PhoneNumber = employeeDto.PhoneNumber,
                     Department = employeeDto.Department,
                     Position = employeeDto.Position,
-                    HireDate = DateTime.UtcNow
+                    HireDate = DateTime.UtcNow,
                 };
 
                 await _context.Employees.AddAsync(newEmployee);

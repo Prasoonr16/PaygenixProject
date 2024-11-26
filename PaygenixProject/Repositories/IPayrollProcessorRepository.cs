@@ -1,4 +1,5 @@
-﻿using NewPayGenixAPI.Models;
+﻿using NewPayGenixAPI.DTO;
+using NewPayGenixAPI.Models;
 
 namespace NewPayGenixAPI.Repositories
 {
@@ -6,6 +7,8 @@ namespace NewPayGenixAPI.Repositories
     {
        
         Task<Payroll> GetPayrollByEmployeeIdAsync(int employeeId);
-        Task VerifyPayrollAsync(int employeeId);
+        //Task VerifyPayrollAsync(int employeeId);
+        Task<Payroll> ProcessPayrollAsync(int employeeId, PayrollDTO payrollDto);
+        Task<bool> VerifyPayrollAsync(int payrollId);
     }
 }

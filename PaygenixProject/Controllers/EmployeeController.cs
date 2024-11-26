@@ -80,7 +80,7 @@ namespace NewPayGenixAPI.Controllers
                 EndDate = leaveRequestDto.EndDate,
                 LeaveType = leaveRequestDto.LeaveType,
                 Status = "Pending",
-                RequestDate = DateTime.UtcNow
+                RequestDate = DateTime.UtcNow,
             };
 
             await _employeeRepository.RequestLeaveAsync(leaveRequest);

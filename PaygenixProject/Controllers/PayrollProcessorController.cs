@@ -19,15 +19,50 @@ namespace NewPayGenixAPI.Controllers
             _payrollProcessorRepository = payrollProcessorRepository;
         }
 
-        
+        [HttpPost("process/{employeeId}")]
+        public async Task<IActionResult> ProcessPayroll(int employeeId, [FromBody] PayrollDTO payrollDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                var payroll = await _payrollProcessorRepository.ProcessPayrollAsync(employeeId, payrollDto);
+                return CreatedAtAction(nameof(ProcessPayroll), new { id = payroll.PayrollID }, payroll);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPost("verify/{payrollId}")]
+        public async Task<IActionResult> VerifyPayroll(int payrollId)
+        {
+            try
+            {
+                var isVerified = await _payrollProcessorRepository.VerifyPayrollAsync(payrollId);
+                if (isVerified)
+                {
+                    return Ok("Payroll verified successfully");
+                }
+                return BadRequest("Payroll verification failed");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 
         // Verify Payroll
-        [HttpGet("verify/{employeeId}")]
-        public async Task<IActionResult> VerifyPayroll(int employeeId)
-        {
-            await _payrollProcessorRepository.VerifyPayrollAsync(employeeId);
-            return Ok($"Payroll for Employee ID {employeeId} has been verified.");
-        }
+        //[HttpGet("verify/{employeeId}")]
+        //public async Task<IActionResult> VerifyPayroll(int employeeId)
+        //{
+        //    await _payrollProcessorRepository.VerifyPayrollAsync(employeeId);
+        //    return Ok($"Payroll for Employee ID {employeeId} has been verified.");
+        //}
 
     }
 }

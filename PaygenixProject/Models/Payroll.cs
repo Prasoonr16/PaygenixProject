@@ -49,10 +49,10 @@ namespace NewPayGenixAPI.Models
         public decimal NetPay { get; set; }  // Final take-home pay
 
         [Required]
-        [MaxLength(50)]
+        [DataType(DataType.Date)]
         public DateTime StartPeriod { get; set; }
         [Required]
-        [MaxLength(50)]
+        [DataType(DataType.Date)]
         public DateTime EndPeriod { get; set; }
 
         public DateTime GeneratedDate { get; set; }

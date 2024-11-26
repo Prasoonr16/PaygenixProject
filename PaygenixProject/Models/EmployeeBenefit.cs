@@ -13,6 +13,7 @@ namespace NewPayGenixAPI.Models
         [Required]
         public int BenefitID { get; set; }  // Foreign Key to Benefit
 
+        [DataType(DataType.Date)]
         public DateTime EnrolledDate { get; set; }
 
         // Navigation Properties

@@ -11,10 +11,10 @@ namespace NewPayGenixAPI.Models
         public int EmployeeID { get; set; }  // Foreign Key to Employee
 
         [Required]
-        public DateTime StartDate { get; set; }
+        public DateOnly StartDate { get; set; }
 
         [Required]
-        public DateTime EndDate { get; set; }
+        public DateOnly EndDate { get; set; }
 
         [Required]
         [MaxLength(50)]
@@ -25,7 +25,11 @@ namespace NewPayGenixAPI.Models
         [RegularExpression(@"^(Approved|Not Approved)$", ErrorMessage = "Status must be either 'Approved' or 'Not Approved'.")]
         public string Status { get; set; }
 
+        [DataType(DataType.Date)]
+
         public DateTime RequestDate { get; set; }
+       
+        [DataType(DataType.Date)]
         public DateTime? ApprovalDate { get; set; }
 
         //[ForeignKey("EmployeeID")]

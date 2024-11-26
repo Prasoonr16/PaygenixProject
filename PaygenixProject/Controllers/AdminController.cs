@@ -153,7 +153,6 @@ namespace NewPayGenixAPI.Controllers
                 IssuesFound = reportDto.IssuesFound,
                 ResolvedStatus = reportDto.ResolvedStatus,
                 Comments = reportDto.Comments,
-                GeneratedBy = reportDto.GeneratedBy
             };
 
             await _adminRepository.GenerateComplianceReportAsync(report);

@@ -11,7 +11,7 @@ namespace NewPayGenixAPI.Models
         public int? EmployeeID { get; set; }  // Foreign Key to Employee
 
         [MaxLength(50)]
-        public DateTime PayrollIssued { get; set; }
+        public DateOnly PayrollIssued { get; set; }
 
         [MaxLength(50)]
         public string ComplianceStatus { get; set; }
@@ -22,7 +22,7 @@ namespace NewPayGenixAPI.Models
 
         public string ResolvedStatus { get; set; }
 
-        public int GeneratedBy { get; set; }  // Foreign Key to User who generated the report
+        //public int GeneratedBy { get; set; }  // Foreign Key to User who generated the report
 
         public string Comments { get; set; }
 

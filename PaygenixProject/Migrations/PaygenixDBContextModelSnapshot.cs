@@ -68,16 +68,13 @@ namespace PaygenixProject.Migrations
                     b.Property<int?>("EmployeeID")
                         .HasColumnType("int");
 
-                    b.Property<int>("GeneratedBy")
-                        .HasColumnType("int");
-
                     b.Property<string>("IssuesFound")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("PayrollIssued")
+                    b.Property<DateOnly>("PayrollIssued")
                         .HasMaxLength(50)
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
                     b.Property<DateTime>("ReportDate")
                         .HasColumnType("datetime2");
@@ -185,8 +182,8 @@ namespace PaygenixProject.Migrations
                     b.Property<int>("EmployeeID")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date");
 
                     b.Property<string>("LeaveType")
                         .IsRequired()
@@ -196,8 +193,8 @@ namespace PaygenixProject.Migrations
                     b.Property<DateTime>("RequestDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -235,7 +232,6 @@ namespace PaygenixProject.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("EndPeriod")
-                        .HasMaxLength(50)
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("GeneratedDate")
@@ -257,7 +253,6 @@ namespace PaygenixProject.Migrations
                         .HasColumnType("decimal(10, 2)");
 
                     b.Property<DateTime>("StartPeriod")
-                        .HasMaxLength(50)
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("TDS")

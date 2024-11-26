@@ -29,6 +29,7 @@ namespace NewPayGenixAPI.Models
 
         [MaxLength(50)]
         public string Department { get; set; }
+        [DataType(DataType.Date)]
 
         public DateTime HireDate { get; set; }
 
