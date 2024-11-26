@@ -15,7 +15,7 @@ namespace NewPayGenixAPI.Repositories
 
             public async Task<Employee> GetEmployeeDetailsAsync(int employeeId)
             {
-                return await _context.Employees.Include(e => e.User).FirstOrDefaultAsync(e => e.EmployeeID == employeeId);
+                return await _context.Employees.FirstOrDefaultAsync(e => e.EmployeeID == employeeId);
             }
 
             public async Task UpdateEmployeePersonalInfoAsync(Employee employee)

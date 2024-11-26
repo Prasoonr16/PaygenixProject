@@ -19,33 +19,7 @@ namespace NewPayGenixAPI.Controllers
             _payrollProcessorRepository = payrollProcessorRepository;
         }
 
-        // Add Payroll
-        [HttpPost("add")]
-        public async Task<IActionResult> AddPayroll([FromBody] PayrollDTO payrollDto)
-        {
-            var payroll = new Payroll
-            {
-                EmployeeID = payrollDto.EmployeeID,
-                BasicSalary = payrollDto.BasicSalary,
-                HRA = payrollDto.HRA,
-                LTA = payrollDto.LTA,
-                TravellingAllowance = payrollDto.TravellingAllowance,
-                DA = payrollDto.DA,
-                GrossPay = payrollDto.GrossPay,
-                PF = payrollDto.PF,
-                TDS = payrollDto.TDS,
-                ESI = payrollDto.ESI,
-                Deduction = payrollDto.Deduction,
-                TaxAmount = payrollDto.TaxAmount,
-                NetPay = payrollDto.NetPay,
-                StartPeriod = payrollDto.StartPeriod,
-                EndPeriod = payrollDto.EndPeriod,
-                GeneratedDate = payrollDto.GeneratedDate
-            };
-
-            await _payrollProcessorRepository.AddPayrollAsync(payroll);
-            return CreatedAtAction(nameof(AddPayroll), new { id = payroll.PayrollID }, payroll);
-        }
+        
 
         // Verify Payroll
         [HttpGet("verify/{employeeId}")]

@@ -9,10 +9,12 @@ namespace NewPayGenixAPI.Repositories
         Task AddEmployeeAsync(Employee employee);
         Task UpdateEmployeeAsync(Employee employee);
         Task DeleteEmployeeAsync(int id);
-        Task AssignRoleToUserAsync(int userId, int roleId);
-
         Task<IEnumerable<User>> GetAllUserAsync();
-        Task GeneratePayrollAsync(int employeeId);
+        Task<User> GetUserByIdAsync(int id);
+        Task UpdateUserAsync(User user);
+        Task AddPayrollAsync(Payroll payroll);
+        Task<Payroll> GetPayrollByEmployeeIdAsync(int id);
+        Task UpdatePayrollAsync(Payroll payroll);
         Task GenerateComplianceReportAsync(ComplianceReport report);
     }
 }

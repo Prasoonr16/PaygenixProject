@@ -8,18 +8,15 @@ namespace NewPayGenixAPI.Repositories
     {
             private readonly PaygenixDBContext _context;
 
-            public PayrollProcessorRepository(PaygenixDBContext context)
-            {
-                _context = context;
-            }
+        public PayrollProcessorRepository(PaygenixDBContext context)
+        {
+            _context = context;
+        }
 
-            public async Task AddPayrollAsync(Payroll payroll)
-            {
-                await _context.Payrolls.AddAsync(payroll);
-                await _context.SaveChangesAsync();
-            }
+       
 
-            public async Task<Payroll> GetPayrollByEmployeeIdAsync(int employeeId)
+
+        public async Task<Payroll> GetPayrollByEmployeeIdAsync(int employeeId)
             {
                 return await _context.Payrolls.FirstOrDefaultAsync(p => p.EmployeeID == employeeId);
             }

@@ -17,7 +17,7 @@ namespace NewPayGenixAPI.Controllers
     {
         private readonly PaygenixDBContext _context;
         private readonly IConfiguration _configuration;
-
+        
         public UserController(PaygenixDBContext context, IConfiguration configuration)
         {
             _context = context;
@@ -27,22 +27,12 @@ namespace NewPayGenixAPI.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDTO registerDto)
         {
-            // Check if username already exists
-            //var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Username == registerDto.Username);
-            //if (existingUser != null)
-            //{
-            //    return BadRequest("Username is already taken.");
-            //}
-
             // Validate RoleID
             var role = await _context.Roles.FindAsync(registerDto.RoleID);
             if (role == null)
             {
                 return BadRequest("Invalid RoleID.");
             }
-
-            // Hash the password
-            //var passwordHash = HashPassword(registerDto.Password);
 
             // Create a new User object
             var newUser = new User
@@ -88,17 +78,6 @@ namespace NewPayGenixAPI.Controllers
             return Ok("User registered successfully and your userID is : " + newUser.UserID);
         }
 
-        // Helper method to hash passwords
-        //private string HashPassword(string password)
-        //{
-        //    using (var sha256 = SHA256.Create())
-        //    {
-        //        var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-        //        return Convert.ToBase64String(hashedBytes);
-        //    }
-        //}
-
-
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO loginDto)
         {
@@ -141,15 +120,13 @@ namespace NewPayGenixAPI.Controllers
                 expires: DateTime.Now.AddHours(1),
                 signingCredentials: creds);
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+           return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         // Helper Method to Verify Password (assuming passwords are hashed)
         private bool VerifyPassword(string inputPassword, string storedPasswordHash)
         {
-            // You can use any hashing mechanism (e.g., BCrypt, SHA256).
-            // For demonstration, this assumes plain text matching (not recommended in production).
-            return inputPassword == storedPasswordHash; // Replace with hashing logic.
+            return inputPassword == storedPasswordHash; 
         }
     }
 }
