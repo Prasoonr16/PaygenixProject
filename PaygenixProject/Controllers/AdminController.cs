@@ -13,6 +13,7 @@ namespace NewPayGenixAPI.Controllers
     public class AdminController : ControllerBase
     {
         private readonly IAdminRepository _adminRepository;
+        //private readonly IWebHostEnvironment _webHostEnvironment;
 
         public AdminController(IAdminRepository adminRepository)
         {
@@ -159,5 +160,31 @@ namespace NewPayGenixAPI.Controllers
             return CreatedAtAction(nameof(GenerateComplianceReport), new { id = report.ReportID }, report);
         }
 
+        //[HttpGet("logs")]
+        //public IActionResult GetLogs([FromQuery] string? date)
+        //{
+        //    //Determine log file path
+        //    var logDirectory = Path.Combine(_webHostEnvironment.ContentRootPath, "Logs");
+        //    string logFileName = string.IsNullOrWhiteSpace(date)
+        //        ? "api-log.txt" //Default to the current log file
+        //        : $"api-log-{date}"; //Log file for a specific date
+
+        //    var logFilePath = Path.Combine(logDirectory, logFileName);
+
+        //    //Check if the log file exists
+        //    if(!System.IO.File.Exists(logFilePath))
+        //    {
+        //        return NotFound($"Log file not found for the specified date: {date}");
+        //    }
+
+        //    var logContent = System.IO.File.ReadAllText(logFilePath);
+
+        //    return Ok(new
+        //    {
+        //        FileName = logFileName,
+        //        Content = logContent
+        //    });
+        //}
     }
 }
+

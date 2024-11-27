@@ -1,6 +1,9 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
+using log4net;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +11,8 @@ using Microsoft.IdentityModel.Tokens;
 using NewPayGenixAPI.Data;
 using NewPayGenixAPI.DTO;
 using NewPayGenixAPI.Models;
+using PaygenixProject.DTO;
+using PaygenixProject.Models;
 
 namespace NewPayGenixAPI.Controllers
 {
@@ -17,7 +22,9 @@ namespace NewPayGenixAPI.Controllers
     {
         private readonly PaygenixDBContext _context;
         private readonly IConfiguration _configuration;
-        
+
+        // Logger instance
+        private static readonly ILog _logger = LogManager.GetLogger(typeof(UserController));
         public UserController(PaygenixDBContext context, IConfiguration configuration)
         {
             _context = context;
@@ -81,6 +88,8 @@ namespace NewPayGenixAPI.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO loginDto)
         {
+            _logger.Info($"Login attempt for username: {loginDto.Username}");
+
             // Validate user credentials
             var user = await _context.Users
                 .Include(u => u.Role)
@@ -88,20 +97,87 @@ namespace NewPayGenixAPI.Controllers
 
             if (user == null || !VerifyPassword(loginDto.Password, user.PasswordHash))
             {
+                _logger.Warn($"Login failed for username: {loginDto.Username}");
                 return Unauthorized("Invalid username or password.");
             }
 
             // Generate JWT Token
-            var token = GenerateJwtToken(user);
+            var token = GenerateAccessToken(user);
+
+            // Generate Refresh Token
+            var refreshToken = GenerateRefreshToken();
+            refreshToken.UserID = user.UserID;
+
+            // Store Refresh Token in the database
+            await _context.RefreshTokens.AddAsync(refreshToken);
+            await _context.SaveChangesAsync();
+
+            _logger.Info($"Login successful for username: {loginDto.Username}, Role: {user.Role.RoleName}");
+
+
             return Ok(new
-            { 
-                Token = token ,
+            {
+                Token = token,
+                refreshToken = refreshToken.Token,
                 Role = user.Role.RoleName
             });
         }
 
-        // Helper Method to Generate JWT Token
-        private string GenerateJwtToken(User user)
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken([FromBody] string refreshToken)
+        {
+            // Find the refresh token in the database
+            var storedToken = await _context.RefreshTokens
+                .FirstOrDefaultAsync(rt => rt.Token == refreshToken);
+
+            if (storedToken == null || storedToken.IsRevoked || storedToken.IsUsed)
+            {
+                return Unauthorized("Invalid or expired refresh token.");
+            }
+
+            // Check if the refresh token is expired
+            if (storedToken.Expires < DateTime.UtcNow)
+            {
+                return Unauthorized("Refresh token has expired.");
+            }
+
+            // Get the user associated with the refresh token
+            var user = await _context.Users
+                .Include(u => u.Role)
+                .FirstOrDefaultAsync(u => u.UserID == storedToken.UserID);
+
+            if (user == null)
+            {
+                return Unauthorized("Invalid refresh token.");
+            }
+
+            // Generate a new JWT token
+            var newJwtToken = GenerateAccessToken(user);
+
+            // Mark the refresh token as used
+            storedToken.IsUsed = true;
+            _context.RefreshTokens.Update(storedToken);
+            await _context.SaveChangesAsync();
+
+            // Generate a new refresh token
+            var newRefreshToken = GenerateRefreshToken();
+            newRefreshToken.UserID = user.UserID;
+
+            // Store the new refresh token
+            await _context.RefreshTokens.AddAsync(newRefreshToken);
+            await _context.SaveChangesAsync();
+
+            // Return new tokens
+            return Ok(new
+            {
+                Token = newJwtToken,
+                RefreshToken = newRefreshToken.Token
+            });
+        }
+
+
+        // Method to Generate JWT Access Token
+        private string GenerateAccessToken(User user)
         {
             var claims = new List<Claim>
             {
@@ -120,13 +196,79 @@ namespace NewPayGenixAPI.Controllers
                 expires: DateTime.Now.AddHours(1),
                 signingCredentials: creds);
 
-           return new JwtSecurityTokenHandler().WriteToken(token);
+            _logger.Debug($"JWT access token generated for UserID: {user.UserID}");
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        // Method to generate a Refresh Token
+        private RefreshToken GenerateRefreshToken()
+        {
+            var token = new RefreshToken
+            {
+                Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
+                Expires = DateTime.UtcNow.AddDays(7), // Refresh token expires in 7 days
+                IsRevoked = false,
+                IsUsed = false
+            };
+
+            _logger.Debug("Refresh token generated.");
+
+            return token;
         }
 
         // Helper Method to Verify Password (assuming passwords are hashed)
         private bool VerifyPassword(string inputPassword, string storedPasswordHash)
         {
-            return inputPassword == storedPasswordHash; 
+            return inputPassword == storedPasswordHash;
         }
+
+        [HttpPost("logout")]
+        [Authorize] // Ensure only authenticated users can log out
+        public async Task<IActionResult> Logout([FromBody] LogoutDTO logoutDto)
+        {
+            // Get the current user from the claims
+            var userId = int.Parse(User.FindFirst("UserID")?.Value);
+
+            _logger.Info($"Logout attempt for UserID: {userId}");
+
+            // If a specific refresh token is provided, revoke it
+            if (!string.IsNullOrEmpty(logoutDto.RefreshToken))
+            {
+                var token = await _context.RefreshTokens
+                    .FirstOrDefaultAsync(rt => rt.Token == logoutDto.RefreshToken && rt.UserID == userId);
+
+                if (token == null)
+                {
+                    _logger.Warn($"Invalid refresh token for UserID: {userId}");
+                    return BadRequest("Invalid refresh token.");
+                }
+
+                // Revoke the token
+                token.IsRevoked = true;
+                _context.RefreshTokens.Update(token);
+                await _context.SaveChangesAsync();
+
+                _logger.Info($"Logout successful for UserID: {userId} (specific token revoked)");
+                return Ok("Logged out successfully.");
+            }
+
+            // Revoke all refresh tokens for the user (optional)
+            var allTokens = await _context.RefreshTokens
+                .Where(rt => rt.UserID == userId && !rt.IsRevoked && !rt.IsUsed)
+                .ToListAsync();
+
+            foreach (var refreshToken in allTokens)
+            {
+                refreshToken.IsRevoked = true;
+            }
+
+            _context.RefreshTokens.UpdateRange(allTokens);
+            await _context.SaveChangesAsync();
+
+            _logger.Info($"Logout successful for UserID: {userId} (all tokens revoked)");
+            return Ok("Logged out successfully from all devices.");
+        }
+
     }
 }

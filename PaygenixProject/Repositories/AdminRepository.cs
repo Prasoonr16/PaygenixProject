@@ -8,6 +8,7 @@ namespace NewPayGenixAPI.Repositories
     {
             private readonly PaygenixDBContext _context;
 
+
             public AdminRepository(PaygenixDBContext context)
             {
                 _context = context;

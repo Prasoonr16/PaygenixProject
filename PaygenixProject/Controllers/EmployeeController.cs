@@ -6,6 +6,7 @@ using NewPayGenixAPI.Models;
 using NewPayGenixAPI.Repositories;
 
 namespace NewPayGenixAPI.Controllers
+
 {
     [ApiController]
     [Route("api/employee")]
@@ -54,21 +55,6 @@ namespace NewPayGenixAPI.Controllers
             return Ok(payStubs);
         }
 
-        // Submit Timesheet
-        //[HttpPost("submit-timesheet")]
-        //public async Task<IActionResult> SubmitTimesheet([FromBody] TimeSheetDTO timesheetDto)
-        //{
-        //    var timesheet = new TimeSheet
-        //    {
-        //        EmployeeID = timesheetDto.EmployeeID,
-        //        Date = timesheetDto.Date,
-        //        HoursWorked = timesheetDto.HoursWorked
-        //    };
-
-        //    await _employeeRepository.SubmitTimesheetAsync(timesheet);
-        //    return CreatedAtAction(nameof(SubmitTimesheet), new { id = timesheet.EmployeeID }, timesheet);
-        //}
-
         // Request Leave
         [HttpPost("request-leave")]
         public async Task<IActionResult> RequestLeave([FromBody] LeaveRequestDTO leaveRequestDto)
@@ -84,8 +70,8 @@ namespace NewPayGenixAPI.Controllers
             };
 
             await _employeeRepository.RequestLeaveAsync(leaveRequest);
-            return CreatedAtAction(nameof(RequestLeave), new { id = leaveRequest.LeaveRequestID }, leaveRequest);
-
+            //return CreatedAtAction(nameof(RequestLeave), new { id = leaveRequest.LeaveRequestID }, leaveRequest);
+            return Ok("Leave Requested");
         }
     }
 }
