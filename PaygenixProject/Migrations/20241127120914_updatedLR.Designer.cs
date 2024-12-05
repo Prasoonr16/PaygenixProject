@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NewPayGenixAPI.Data;
 
@@ -11,9 +12,11 @@ using NewPayGenixAPI.Data;
 namespace PaygenixProject.Migrations
 {
     [DbContext(typeof(PaygenixDBContext))]
-    partial class PaygenixDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241127120914_updatedLR")]
+    partial class updatedLR
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -72,9 +75,9 @@ namespace PaygenixProject.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("PayrollPeriod")
+                    b.Property<DateOnly>("PayrollIssued")
                         .HasMaxLength(50)
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
                     b.Property<DateTime>("ReportDate")
                         .HasColumnType("datetime2");

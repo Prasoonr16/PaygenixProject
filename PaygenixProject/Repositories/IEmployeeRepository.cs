@@ -9,5 +9,7 @@ namespace NewPayGenixAPI.Repositories
         Task<IEnumerable<Payroll>> GetPayStubsAsync(int employeeId);
         //Task SubmitTimesheetAsync(TimeSheet timesheet);
         Task RequestLeaveAsync(LeaveRequest leaveRequest);
+
+        Task GenerateComplianceReportAsync(ComplianceReport report);
     }
 }

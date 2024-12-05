@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NewPayGenixAPI.Models;
+using PaygenixProject.Models;
 
 namespace NewPayGenixAPI.Data
 {
@@ -72,5 +73,7 @@ namespace NewPayGenixAPI.Data
         public DbSet<Benefit> Benefits { get; set; }
         public DbSet<EmployeeBenefit> EmployeeBenefits { get; set; }
         public DbSet<ComplianceReport> ComplianceReports { get; set; }
+
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
     }
 }

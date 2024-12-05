@@ -54,15 +54,5 @@ namespace NewPayGenixAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-
-        // Verify Payroll
-        //[HttpGet("verify/{employeeId}")]
-        //public async Task<IActionResult> VerifyPayroll(int employeeId)
-        //{
-        //    await _payrollProcessorRepository.VerifyPayrollAsync(employeeId);
-        //    return Ok($"Payroll for Employee ID {employeeId} has been verified.");
-        //}
-
     }
 }

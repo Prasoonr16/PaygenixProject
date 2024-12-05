@@ -26,41 +26,40 @@ namespace NewPayGenixAPI.Controllers
             return Ok(payrolls);
         }
 
-        //// Approve Leave Requests
-        //[HttpGet("{managerId}/leave-requests")]
-        //public async Task<IActionResult> GetPendingLeaveRequests(int managerId)
-        //{
-        //    var leaveRequests = await _managerRepository.GetPendingLeaveRequestsAsync(managerId);
-        //    return Ok(leaveRequests);
-        //}
-
-        [HttpGet("employee/{employeeId}/leave-requests")]
+       [HttpGet("employee/{employeeId}/leave-requests")]
         public async Task<IActionResult> GetLeaveRequestsByEmployeeId(int employeeId)
         {
-            var leaveRequests = await _managerRepository.GetLeaveRequestsByEmployeeIdAsync(employeeId);
-            if (!leaveRequests.Any()) return NotFound("No leave requests found for this employee.");
-            return Ok(leaveRequests);
+            try
+            {
+                var leaveRequests = await _managerRepository.GetLeaveRequestsByEmployeeIdAsync(employeeId);
+                if (!leaveRequests.Any()) return NotFound("No leave requests found for this employee.");
+                return Ok(leaveRequests);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
 
         [HttpPut("leave-request/{leaveRequestId}/update-status")]
         public async Task<IActionResult> UpdateLeaveRequestStatus(int leaveRequestId, [FromQuery] string status)
         {
-            // Validate the status (e.g., Approved, Rejected)
-            var validStatuses = new[] { "Approved", "Rejected" };
-            if (!validStatuses.Contains(status, StringComparer.OrdinalIgnoreCase))
+            try
             {
-                return BadRequest("Invalid status. Valid values are: Approved, Rejected.");
+                // Validate the status (e.g., Approved, Rejected)
+                var validStatuses = new[] { "Approved", "Rejected" };
+                if (!validStatuses.Contains(status, StringComparer.OrdinalIgnoreCase))
+                {
+                    return BadRequest("Invalid status. Valid values are: Approved, Rejected.");
+                }
+
+                await _managerRepository.UpdateLeaveRequestStatusAsync(leaveRequestId, status);
+                return Ok($"Leave request {leaveRequestId} status updated to {status}.");
             }
-
-            await _managerRepository.UpdateLeaveRequestStatusAsync(leaveRequestId, status);
-            return Ok($"Leave request {leaveRequestId} status updated to {status}.");
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
-        //[HttpPut("approve-leave/{employeeid}")]
-        //public async Task<IActionResult> ApproveLeaveRequest(int employeeid, [FromQuery] bool isApproved)
-        //{
-        //    await _managerRepository.ApproveLeaveRequestAsync(employeeid, isApproved);
-        //    return Ok(isApproved ? "Leave approved" : "Leave rejected");
-        //}
-
     }
 }

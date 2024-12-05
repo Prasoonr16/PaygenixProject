@@ -11,7 +11,7 @@ namespace NewPayGenixAPI.Models
         public int? EmployeeID { get; set; }  // Foreign Key to Employee
 
         [MaxLength(50)]
-        public DateOnly PayrollIssued { get; set; }
+        public DateTime PayrollPeriod{ get; set; }
 
         [MaxLength(50)]
         public string ComplianceStatus { get; set; }

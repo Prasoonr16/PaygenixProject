@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NewPayGenixAPI.Data;
 
@@ -11,9 +12,11 @@ using NewPayGenixAPI.Data;
 namespace PaygenixProject.Migrations
 {
     [DbContext(typeof(PaygenixDBContext))]
-    partial class PaygenixDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241126161112_thirdDB")]
+    partial class thirdDB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -72,9 +75,9 @@ namespace PaygenixProject.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("PayrollPeriod")
+                    b.Property<DateOnly>("PayrollIssued")
                         .HasMaxLength(50)
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
                     b.Property<DateTime>("ReportDate")
                         .HasColumnType("datetime2");
@@ -182,8 +185,8 @@ namespace PaygenixProject.Migrations
                     b.Property<int>("EmployeeID")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date");
 
                     b.Property<string>("LeaveType")
                         .IsRequired()
@@ -193,8 +196,8 @@ namespace PaygenixProject.Migrations
                     b.Property<DateTime>("RequestDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date");
 
                     b.Property<string>("Status")
                         .IsRequired()

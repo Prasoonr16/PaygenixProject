@@ -55,7 +55,7 @@ namespace NewPayGenixAPI.Repositories
             };
 
             // Save to the database
-            await _context.Payrolls.AddAsync(payroll);
+            _context.Payrolls.Update(payroll);
             await _context.SaveChangesAsync();
 
             return payroll;

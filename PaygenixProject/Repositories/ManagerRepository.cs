@@ -9,6 +9,8 @@ namespace NewPayGenixAPI.Repositories
             private readonly PaygenixDBContext _context;
 
             public ManagerRepository(PaygenixDBContext context)
+
+
             {
                 _context = context;
             }
