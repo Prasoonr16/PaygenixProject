@@ -9,7 +9,7 @@ namespace NewPayGenixAPI.Controllers
 {
     [ApiController]
     [Route("api/admin")]
-    [Authorize(Roles = "Admin")] // Only users with the "Admin" role can access these endpoints
+    //[Authorize(Roles = "Admin")] // Only users with the "Admin" role can access these endpoints
     public class AdminController : ControllerBase
     {
         private readonly IAdminRepository _adminRepository;

@@ -9,6 +9,14 @@ using NewPayGenixAPI.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalhost",
+        builder => builder
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+});
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -93,7 +101,7 @@ if (app.Environment.IsDevelopment())
 }
     
 app.UseHttpsRedirection();
-
+app.UseCors("AllowLocalhost");
 app.UseAuthentication();
 
 app.UseAuthorization();

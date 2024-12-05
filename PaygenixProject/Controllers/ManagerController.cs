@@ -7,7 +7,7 @@ namespace NewPayGenixAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Manager")] // Only users with the "Manager" role can access these endpoints
+    //[Authorize(Roles = "Manager")] // Only users with the "Manager" role can access these endpoints
     
     public class ManagerController : ControllerBase
     {

@@ -9,7 +9,7 @@ namespace NewPayGenixAPI.Controllers
 {
     [ApiController]
     [Route("api/payrollprocessor")]
-    [Authorize(Roles = "PayrollProcessor")] // Only users with the "PayrollProcessor" role can access these endpoints
+    //[Authorize(Roles = "PayrollProcessor")] // Only users with the "PayrollProcessor" role can access these endpoints
     public class PayrollProcessorController : ControllerBase
     {
         private readonly IPayrollProcessorRepository _payrollProcessorRepository;

@@ -11,10 +11,10 @@ namespace NewPayGenixAPI.Models
         public int EmployeeID { get; set; }  // Foreign Key to Employee
 
         [Required]
-        public DateOnly StartDate { get; set; }
+        public DateTime StartDate { get; set; }
 
         [Required]
-        public DateOnly EndDate { get; set; }
+        public DateTime EndDate { get; set; }
 
         [Required]
         [MaxLength(50)]
