@@ -12,8 +12,8 @@ using NewPayGenixAPI.Data;
 namespace PaygenixProject.Migrations
 {
     [DbContext(typeof(PaygenixDBContext))]
-    [Migration("20241126090047_secondDB")]
-    partial class secondDB
+    [Migration("20241205144859_newdb2")]
+    partial class newdb2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -71,14 +71,11 @@ namespace PaygenixProject.Migrations
                     b.Property<int?>("EmployeeID")
                         .HasColumnType("int");
 
-                    b.Property<int>("GeneratedBy")
-                        .HasColumnType("int");
-
                     b.Property<string>("IssuesFound")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("PayrollIssued")
+                    b.Property<DateTime>("PayrollPeriod")
                         .HasMaxLength(50)
                         .HasColumnType("datetime2");
 
@@ -238,7 +235,6 @@ namespace PaygenixProject.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("EndPeriod")
-                        .HasMaxLength(50)
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("GeneratedDate")
@@ -260,7 +256,6 @@ namespace PaygenixProject.Migrations
                         .HasColumnType("decimal(10, 2)");
 
                     b.Property<DateTime>("StartPeriod")
-                        .HasMaxLength(50)
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("TDS")
@@ -328,6 +323,37 @@ namespace PaygenixProject.Migrations
                     b.HasIndex("RoleID");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("PaygenixProject.Models.RefreshToken", b =>
+                {
+                    b.Property<int>("RefreshTokenID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RefreshTokenID"));
+
+                    b.Property<DateTime>("Expires")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserID")
+                        .HasColumnType("int");
+
+                    b.HasKey("RefreshTokenID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("NewPayGenixAPI.Models.ComplianceReport", b =>
@@ -399,6 +425,17 @@ namespace PaygenixProject.Migrations
                         .IsRequired();
 
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("PaygenixProject.Models.RefreshToken", b =>
+                {
+                    b.HasOne("NewPayGenixAPI.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("NewPayGenixAPI.Models.Benefit", b =>

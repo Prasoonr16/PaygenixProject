@@ -5,7 +5,7 @@
 namespace PaygenixProject.Migrations
 {
     /// <inheritdoc />
-    public partial class secondDB : Migration
+    public partial class newdb2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
