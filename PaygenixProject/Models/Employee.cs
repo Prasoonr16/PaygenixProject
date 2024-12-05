@@ -33,6 +33,7 @@ namespace NewPayGenixAPI.Models
 
         public DateTime HireDate { get; set; }
 
+        public string ActiveStatus { get; set; }
         public int? UserID { get; set; }  // Foreign Key to User 
 
         //[ForeignKey("UserID")]

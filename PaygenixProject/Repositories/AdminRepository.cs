@@ -42,7 +42,7 @@ namespace NewPayGenixAPI.Repositories
             var employee = await _context.Employees.FindAsync(id);
             if (employee == null) throw new Exception("Employee not found");
 
-            _context.Employees.Remove(employee);
+            employee.ActiveStatus = "Offboarded";
             await _context.SaveChangesAsync();
         }
 
@@ -63,7 +63,26 @@ namespace NewPayGenixAPI.Repositories
 
         public async Task AddPayrollAsync(Payroll payroll)
         {
-            await _context.Payrolls.AddAsync(payroll);
+            var newpayroll = new Payroll
+            {
+                EmployeeID = payroll.EmployeeID,
+                BasicSalary = payroll.BasicSalary,
+                HRA = payroll.HRA,
+                LTA = payroll.LTA,
+                TravellingAllowance = payroll.TravellingAllowance,
+                DA = payroll.DA,
+                GrossPay = payroll.GrossPay,
+                PF = payroll.PF,
+                TDS = payroll.TDS,
+                ESI = payroll.ESI,
+                Deduction = payroll.Deduction,
+                TaxAmount = payroll.TaxAmount,
+                NetPay = payroll.NetPay,
+                StartPeriod = payroll.StartPeriod,
+                EndPeriod = payroll.EndPeriod,
+                GeneratedDate = payroll.GeneratedDate
+            };
+            await _context.Payrolls.AddAsync(newpayroll);
             await _context.SaveChangesAsync();
         }
 

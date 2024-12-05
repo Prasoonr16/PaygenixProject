@@ -73,9 +73,9 @@ namespace NewPayGenixAPI.Controllers
                         LastName = employeeDto.LastName,
                         Email = employeeDto.Email,
                         PhoneNumber = employeeDto.PhoneNumber,
-                        Department = employeeDto.Department,
-                        Position = employeeDto.Position,
-                        HireDate = DateTime.UtcNow,
+                        //Department = employeeDto.Department,
+                        //Position = employeeDto.Position,
+                        //HireDate = DateTime.UtcNow,
                     };
 
                     await _context.Employees.AddAsync(newEmployee);

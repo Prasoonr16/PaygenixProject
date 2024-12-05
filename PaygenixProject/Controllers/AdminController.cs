@@ -60,6 +60,8 @@ namespace NewPayGenixAPI.Controllers
                 employee.PhoneNumber = employeeDto.PhoneNumber;
                 employee.Position = employeeDto.Position;
                 employee.Department = employeeDto.Department;
+                employee.HireDate = employeeDto.HireDate;
+                employee.ActiveStatus= employeeDto.ActiveStatus;
 
                 await _adminRepository.UpdateEmployeeAsync(employee);
                 return Ok("Employee updated successfully!");
@@ -143,7 +145,7 @@ namespace NewPayGenixAPI.Controllers
                 {
                     EmployeeID = payrollDto.EmployeeID,
                     BasicSalary = payrollDto.BasicSalary,
-                    HRA = payrollDto.HRA,
+                    HRA = (20/100)*payrollDto.BasicSalary,
                     LTA = payrollDto.LTA,
                     TravellingAllowance = payrollDto.TravellingAllowance,
                     DA = payrollDto.DA,
