@@ -1,4 +1,5 @@
-﻿using NewPayGenixAPI.Models;
+﻿using NewPayGenixAPI.DTO;
+using NewPayGenixAPI.Models;
 
 namespace NewPayGenixAPI.Repositories
 {
@@ -15,6 +16,11 @@ namespace NewPayGenixAPI.Repositories
         Task AddPayrollAsync(Payroll payroll);
         Task<Payroll> GetPayrollByEmployeeIdAsync(int id);
         Task UpdatePayrollAsync(Payroll payroll);
-        Task GenerateComplianceReportAsync(ComplianceReport report);
+
+        Task<IEnumerable<ComplianceReport>> GetAllComplianceReportAsync();
+
+        Task<bool> UpdateComplianceReportAsync(int employeeId, ComplianceReportDTO updateDTO);
+
+
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NewPayGenixAPI.DTO;
 using NewPayGenixAPI.Models;
 using NewPayGenixAPI.Repositories;
@@ -200,30 +201,47 @@ namespace NewPayGenixAPI.Controllers
             }
         }
 
-        // Generate Compliance Report
-        [HttpPost("generate-compliance-report")]
-        public async Task<IActionResult> GenerateComplianceReport([FromBody] ComplianceReportDTO reportDto)
+        // GET: api/admin/compliance-reports
+        [HttpGet("compliance-reports")]
+        public async Task<IActionResult> GetAllComplianceReports()
         {
-            try {
-                var report = new ComplianceReport
-                {
-                    ReportDate = DateTime.UtcNow,
-                    EmployeeID = reportDto.EmployeeID,
-                    ComplianceStatus = reportDto.ComplianceStatus,
-                    IssuesFound = reportDto.IssuesFound,
-                    ResolvedStatus = reportDto.ResolvedStatus,
-                    Comments = reportDto.Comments,
-                };
-
-                await _adminRepository.GenerateComplianceReportAsync(report);
-                return CreatedAtAction(nameof(GenerateComplianceReport), new { id = report.ReportID }, report);
-
+            try
+            {
+                var reports = await _adminRepository.GetAllComplianceReportAsync();
+                return Ok(reports);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        [HttpPut("compliance-reports/{employeeId}")]
+        public async Task<IActionResult> UpdateComplianceReport(int employeeId, [FromBody] ComplianceReportDTO updateDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState); // Return 400 if input is invalid
+            }
+
+            try
+            {
+                var isUpdated = await _adminRepository.UpdateComplianceReportAsync(employeeId, updateDTO);
+                if (!isUpdated)
+                {
+                    return NotFound($"Compliance report for EmployeeID {employeeId} not found.");
+                }
+
+                return Ok($"Compliance report for EmployeeID {employeeId} updated successfully.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+
 
         //[HttpGet("logs")]
         //public IActionResult GetLogs([FromQuery] string? date)

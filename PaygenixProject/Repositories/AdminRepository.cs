@@ -1,39 +1,40 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NewPayGenixAPI.Data;
+using NewPayGenixAPI.DTO;
 using NewPayGenixAPI.Models;
 
 namespace NewPayGenixAPI.Repositories
 {
     public class AdminRepository : IAdminRepository
     {
-            private readonly PaygenixDBContext _context;
+        private readonly PaygenixDBContext _context;
 
 
-            public AdminRepository(PaygenixDBContext context)
-            {
-                _context = context;
-            }
+        public AdminRepository(PaygenixDBContext context)
+        {
+            _context = context;
+        }
 
-            public async Task<IEnumerable<Employee>> GetAllEmployeesAsync()
-            {
-                return await _context.Employees.ToListAsync();
-            }
-           
-            public async Task<Employee> GetEmployeeByIdAsync(int id)
-            {
-                return await _context.Employees.FirstOrDefaultAsync(e => e.EmployeeID == id);
-            }
+        public async Task<IEnumerable<Employee>> GetAllEmployeesAsync()
+        {
+            return await _context.Employees.ToListAsync();
+        }
 
-            public async Task AddEmployeeAsync(Employee employee)
-            {
-                await _context.Employees.AddAsync(employee);
-                await _context.SaveChangesAsync();
-            }
+        public async Task<Employee> GetEmployeeByIdAsync(int id)
+        {
+            return await _context.Employees.FirstOrDefaultAsync(e => e.EmployeeID == id);
+        }
 
-            public async Task UpdateEmployeeAsync(Employee employee)
-            {
-                _context.Employees.Update(employee);
-                await _context.SaveChangesAsync();
+        public async Task AddEmployeeAsync(Employee employee)
+        {
+            await _context.Employees.AddAsync(employee);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateEmployeeAsync(Employee employee)
+        {
+            _context.Employees.Update(employee);
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteEmployeeAsync(int id)
@@ -76,11 +77,33 @@ namespace NewPayGenixAPI.Repositories
             _context.Payrolls.Update(payroll);
             _context.SaveChanges();
         }
-        public async Task GenerateComplianceReportAsync(ComplianceReport report)
-            {
-                await _context.ComplianceReports.AddAsync(report);
-                await _context.SaveChangesAsync();
-            }
+
+        public async Task<IEnumerable<ComplianceReport>> GetAllComplianceReportAsync()
+        {
+            return await _context.ComplianceReports.ToListAsync();
         }
 
+        public async Task<bool> UpdateComplianceReportAsync(int employeeId, ComplianceReportDTO updateDTO)
+        {
+            // Find the compliance report for the given EmployeeID
+            var report = await _context.ComplianceReports.FirstOrDefaultAsync(r => r.EmployeeID == employeeId);
+
+            if (report == null)
+            {
+                return false; // Compliance report not found
+            }
+
+            // Update the fields based on the DTO
+            report.ReportDate = DateTime.UtcNow;
+            report.ComplianceStatus = updateDTO.ComplianceStatus;
+            report.ResolvedStatus = updateDTO.ResolvedStatus;
+          
+
+            // Save changes to the database
+            _context.ComplianceReports.Update(report);
+            await _context.SaveChangesAsync();
+
+            return true; // Update successful
+        }
     }
+}

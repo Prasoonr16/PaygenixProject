@@ -101,5 +101,30 @@ namespace NewPayGenixAPI.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        // Generate Compliance Report
+        [HttpPost("generate-compliance-report")]
+        public async Task<IActionResult> GenerateComplianceReport([FromBody] ComplianceReportDTO reportDto)
+        {
+            try
+            {
+                var report = new ComplianceReport
+                {
+                    EmployeeID = reportDto.EmployeeID,
+                    ComplianceStatus = "Pending",
+                    IssuesFound = reportDto.IssuesFound,
+                    ResolvedStatus = "Pending",
+                    Comments = reportDto.Comments,
+                };
+
+                await _employeeRepository.GenerateComplianceReportAsync(report);
+                return CreatedAtAction(nameof(GenerateComplianceReport), new { id = report.ReportID }, report);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 }

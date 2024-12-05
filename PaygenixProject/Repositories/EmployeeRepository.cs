@@ -49,6 +49,12 @@ namespace NewPayGenixAPI.Repositories
                 await _context.LeaveRequests.AddAsync(leaveRequest);
                 await _context.SaveChangesAsync();
             }
-    
+
+        public async Task GenerateComplianceReportAsync(ComplianceReport report)
+        {
+            await _context.ComplianceReports.AddAsync(report);
+            await _context.SaveChangesAsync();
+        }
     }
+
 }
