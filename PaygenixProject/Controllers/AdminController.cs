@@ -54,13 +54,13 @@ namespace NewPayGenixAPI.Controllers
                 var employee = await _adminRepository.GetEmployeeByIdAsync(id);
                 if (employee == null) return NotFound("Employee not found");
 
-                employee.FirstName = employeeDto.FirstName;
-                employee.LastName = employeeDto.LastName;
-                employee.Email = employeeDto.Email;
-                employee.PhoneNumber = employeeDto.PhoneNumber;
+                //employee.FirstName = employeeDto.FirstName;
+                //employee.LastName = employeeDto.LastName;
+                //employee.Email = employeeDto.Email;
+                //employee.PhoneNumber = employeeDto.PhoneNumber;
                 employee.Position = employeeDto.Position;
                 employee.Department = employeeDto.Department;
-                employee.HireDate = employeeDto.HireDate;
+                employee.HireDate = employeeDto.HireDate.Date;
                 employee.ActiveStatus= employeeDto.ActiveStatus;
 
                 await _adminRepository.UpdateEmployeeAsync(employee);
@@ -135,30 +135,84 @@ namespace NewPayGenixAPI.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+        [HttpGet("payroll")]
+        public async Task<IActionResult> GetAllPayrollsAsync()
+        {
+            try
+            {
+                var payrolls = await _adminRepository.GetAllPayrollsAsync();
+                return Ok(payrolls);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
         // Add Payroll
         [HttpPost("add-payroll")]
         public async Task<IActionResult> AddPayroll([FromBody] PayrollDTO payrollDto)
         {
             try {
+                // Validate the employee
+                var employee = await _adminRepository.GetEmployeeByIdAsync(payrollDto.EmployeeID);
+                if (employee == null)
+                {
+                    return NotFound("Employee not found.");
+                }
+
+                // Automated calculations
+                var basicSalary = payrollDto.BasicSalary;
+                var hra = 0.20m * basicSalary; // 20% of Basic Salary
+                var travellingAllowance = 0.10m * basicSalary; // 10% of Basic Salary
+                var da = 0.15m * basicSalary; // 15% of Basic Salary
+
+                // Gross Pay
+                var grossPay = basicSalary + hra + payrollDto.LTA + travellingAllowance + da;
+
+                // Deductions
+                var pf = 0.12m * basicSalary; // 12% of Basic Salary
+                var esi = grossPay <= 21000 ? 0.075m * grossPay : 0; // ESI only for gross pay <= 21,000
+                var tds = payrollDto.TaxAmount; // Tax amount provided
+                var totalDeductions = pf + tds + esi;
+
+                // Net Pay
+                var netPay = grossPay - totalDeductions;
+
                 var payroll = new Payroll
                 {
                     EmployeeID = payrollDto.EmployeeID,
+<<<<<<< HEAD
                     BasicSalary = payrollDto.BasicSalary,
                     HRA = payrollDto.BasicSalary,
+=======
+                    //BasicSalary = payrollDto.BasicSalary,
+                    BasicSalary = basicSalary,
+                    //HRA = (20/100)*payrollDto.BasicSalary,
+                    HRA = hra,
+>>>>>>> 2c0dc7331f2c5c77a2c68f6c335d08c247bf5673
                     LTA = payrollDto.LTA,
-                    TravellingAllowance = payrollDto.TravellingAllowance,
-                    DA = payrollDto.DA,
-                    GrossPay = payrollDto.GrossPay,
-                    PF = payrollDto.PF,
-                    TDS = payrollDto.TDS,
-                    ESI = payrollDto.ESI,
-                    Deduction = payrollDto.Deduction,
-                    TaxAmount = payrollDto.TaxAmount,
-                    NetPay = payrollDto.NetPay,
+                    //TravellingAllowance = payrollDto.TravellingAllowance,
+                    TravellingAllowance = travellingAllowance,
+                    //DA = payrollDto.DA,
+                    DA = da,
+                    //GrossPay = payrollDto.GrossPay,
+                    GrossPay = grossPay,
+                    //PF = payrollDto.PF,
+                    PF = pf,
+                    //TDS = payrollDto.TDS,
+                    TDS = tds,
+                    //ESI = payrollDto.ESI,
+                    ESI = esi,
+                    //Deduction = payrollDto.Deduction,
+                    Deduction = totalDeductions,
+                    //TaxAmount = payrollDto.TaxAmount,
+                    TaxAmount = tds,
+                    //NetPay = payrollDto.NetPay,
+                    NetPay = netPay,
                     StartPeriod = payrollDto.StartPeriod,
                     EndPeriod = payrollDto.EndPeriod,
-                    GeneratedDate = payrollDto.GeneratedDate
+                    GeneratedDate = DateTime.UtcNow
                 };
 
                 await _adminRepository.AddPayrollAsync(payroll);

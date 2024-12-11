@@ -69,6 +69,7 @@ namespace NewPayGenixAPI.Repositories
             // Business logic to verify payroll
             if (payroll.NetPay == (payroll.GrossPay - payroll.Deduction))
             {
+                payroll.GeneratedDate = DateTime.UtcNow.Date;
                 _context.Payrolls.Update(payroll);
                 await _context.SaveChangesAsync();
                 return true;
