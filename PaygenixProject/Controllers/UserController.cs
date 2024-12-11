@@ -214,18 +214,17 @@ namespace NewPayGenixAPI.Controllers
             {
                 var claims = new List<Claim>
             {
-<<<<<<< HEAD
+
                 new Claim("username", user.Username),
                 new Claim("role", user.Role.RoleName),
-                new Claim("UserID", user.UserID.ToString())
-=======
+                new Claim("UserID", user.UserID.ToString()),
+
                 //new Claim(ClaimTypes.Name, user.Username),
                // new Claim(ClaimTypes.Role, user.Role.RoleName),
                 
                     new Claim("username", user.Username),
                     new Claim("role", user.Role.RoleName),
                     new Claim("UserID", user.UserID.ToString())
->>>>>>> 2c0dc7331f2c5c77a2c68f6c335d08c247bf5673
             };
 
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));

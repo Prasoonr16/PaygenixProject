@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NewPayGenixAPI.Models
 {
@@ -11,9 +12,13 @@ namespace NewPayGenixAPI.Models
         public int EmployeeID { get; set; }  // Foreign Key to Employee
 
         [Required]
+        [Column(TypeName = "date")] // Specify the column type as "date"
+
         public DateTime StartDate { get; set; }
 
         [Required]
+        [Column(TypeName = "date")] // Specify the column type as "date"
+
         public DateTime EndDate { get; set; }
 
         [Required]
@@ -25,11 +30,11 @@ namespace NewPayGenixAPI.Models
         [RegularExpression(@"^(Approved|Not Approved)$", ErrorMessage = "Status must be either 'Approved' or 'Not Approved'.")]
         public string Status { get; set; }
 
-        [DataType(DataType.Date)]
+        [Column(TypeName = "date")] // Specify the column type as "date"
 
         public DateTime RequestDate { get; set; }
-       
-        [DataType(DataType.Date)]
+
+        [Column(TypeName = "date")] // Specify the column type as "date"
         public DateTime? ApprovalDate { get; set; }
 
         //[ForeignKey("EmployeeID")]

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NewPayGenixAPI.Models
 {
@@ -20,7 +21,7 @@ namespace NewPayGenixAPI.Models
         [Required]
         public int RoleID { get; set; }  // Foreign Key to Role
 
-        [DataType(DataType.Date)]
+        [Column(TypeName = "date")] // Specify the column type as "date"
         public DateTime CreatedDate { get; set; }
         [DataType(DataType.Date)]
         public DateTime? LastLogin { get; set; }

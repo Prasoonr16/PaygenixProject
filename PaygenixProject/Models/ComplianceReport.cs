@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NewPayGenixAPI.Models
 {
@@ -6,11 +7,13 @@ namespace NewPayGenixAPI.Models
     {
         [Key]
         public int ReportID { get; set; }  // Primary Key
-
+        [Column(TypeName = "date")] // Specify the column type as "date"
         public DateTime ReportDate { get; set; }
         public int? EmployeeID { get; set; }  // Foreign Key to Employee
 
         [MaxLength(50)]
+        [Column(TypeName = "date")] // Specify the column type as "date"
+
         public DateTime PayrollPeriod{ get; set; }
 
         [MaxLength(50)]

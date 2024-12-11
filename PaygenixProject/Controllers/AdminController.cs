@@ -38,13 +38,13 @@ namespace NewPayGenixAPI.Controllers
         }
         
 
-        [HttpGet("employee/{id}")]
-        public async Task<IActionResult> GetEmployeeById(int id)
-        {
-            var employee = await _adminRepository.GetEmployeeByIdAsync(id);
-            if (employee == null) return NotFound("Employee not found");
-            return Ok(employee);
-        }
+        //[HttpGet("employee/{id}")]
+        //public async Task<IActionResult> GetEmployeeById(int id)
+        //{
+        //    var employee = await _adminRepository.GetEmployeeByIdAsync(id);
+        //    if (employee == null) return NotFound("Employee not found");
+        //    return Ok(employee);
+        //}
 
         [HttpPut("employee/{id}")]
         public async Task<IActionResult> UpdateEmployee(int id, [FromBody] EmployeeDTO employeeDto)
@@ -100,20 +100,32 @@ namespace NewPayGenixAPI.Controllers
             }
         }
 
-        [HttpGet("user/{id}")]
-        public async Task<IActionResult> GetUserById(int id)
+        [HttpPost("user/add")]
+        public async Task<IActionResult> AddUser([FromBody] UserDTO userDto)
         {
             try
             {
-                var user = await _adminRepository.GetUserByIdAsync(id);
-                if (user == null) return NotFound("User not found");
-                return Ok(user);
+                // Create a new User entity from the UserDTO
+                var user = new User
+                {
+                    Username = userDto.Username,
+                    PasswordHash = userDto.PasswordHash, // Assuming password is already hashed
+                    RoleID = userDto.RoleID,
+                    CreatedDate = userDto.CreatedDate.Date, // Automatically set the created date
+                    LastLogin = null
+                };
+
+                // Add the user via the repository
+                await _adminRepository.AddUserAsync(user);
+
+                return CreatedAtAction(nameof(AddUser), new { id = user.UserID }, user);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
 
         [HttpPut("user/{id}")]
         public async Task<IActionResult> UpdateUser(int id, [FromBody] UserDTO userDTO)
@@ -182,15 +194,11 @@ namespace NewPayGenixAPI.Controllers
                 var payroll = new Payroll
                 {
                     EmployeeID = payrollDto.EmployeeID,
-<<<<<<< HEAD
-                    BasicSalary = payrollDto.BasicSalary,
-                    HRA = payrollDto.BasicSalary,
-=======
+                    //BasicSalary = payrollDto.BasicSalary,
+                    //HRA = payrollDto.BasicSalary,
                     //BasicSalary = payrollDto.BasicSalary,
                     BasicSalary = basicSalary,
-                    //HRA = (20/100)*payrollDto.BasicSalary,
                     HRA = hra,
->>>>>>> 2c0dc7331f2c5c77a2c68f6c335d08c247bf5673
                     LTA = payrollDto.LTA,
                     //TravellingAllowance = payrollDto.TravellingAllowance,
                     TravellingAllowance = travellingAllowance,
@@ -224,38 +232,38 @@ namespace NewPayGenixAPI.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-        [HttpPut("payroll/{id}")]
-        public async Task<IActionResult> UpdatePayrollByEmployeeId(int id, [FromBody] PayrollDTO payrollDto)
-        {
-            try
-            {
-                var payroll = await _adminRepository.GetPayrollByEmployeeIdAsync(id);
-                if (payroll == null) return NotFound("Payroll not found");
+        //[HttpPut("payroll/{id}")]
+        //public async Task<IActionResult> UpdatePayrollByEmployeeId(int id, [FromBody] PayrollDTO payrollDto)
+        //{
+        //    try
+        //    {
+        //        var payroll = await _adminRepository.GetPayrollByEmployeeIdAsync(id);
+        //        if (payroll == null) return NotFound("Payroll not found");
 
-                payroll.BasicSalary = payrollDto.BasicSalary;
-                payroll.HRA = payrollDto.HRA;
-                payroll.LTA = payrollDto.LTA;
-                payroll.TravellingAllowance = payrollDto.TravellingAllowance;
-                payroll.DA = payrollDto.DA;
-                payroll.GrossPay = payrollDto.GrossPay;
-                payroll.PF = payrollDto.PF;
-                payroll.TDS = payrollDto.TDS;
-                payroll.ESI = payrollDto.ESI;
-                payroll.Deduction = payrollDto.Deduction;
-                payroll.TaxAmount = payrollDto.TaxAmount;
-                payroll.NetPay = payrollDto.NetPay;
-                payroll.StartPeriod = payrollDto.StartPeriod;
-                payroll.EndPeriod = payrollDto.EndPeriod;
+        //        payroll.BasicSalary = payrollDto.BasicSalary;
+        //        payroll.HRA = payrollDto.HRA;
+        //        payroll.LTA = payrollDto.LTA;
+        //        payroll.TravellingAllowance = payrollDto.TravellingAllowance;
+        //        payroll.DA = payrollDto.DA;
+        //        payroll.GrossPay = payrollDto.GrossPay;
+        //        payroll.PF = payrollDto.PF;
+        //        payroll.TDS = payrollDto.TDS;
+        //        payroll.ESI = payrollDto.ESI;
+        //        payroll.Deduction = payrollDto.Deduction;
+        //        payroll.TaxAmount = payrollDto.TaxAmount;
+        //        payroll.NetPay = payrollDto.NetPay;
+        //        payroll.StartPeriod = payrollDto.StartPeriod;
+        //        payroll.EndPeriod = payrollDto.EndPeriod;
 
-                await _adminRepository.UpdatePayrollAsync(payroll);
-                return Ok("Payroll updated successfully!");
+        //        await _adminRepository.UpdatePayrollAsync(payroll);
+        //        return Ok("Payroll updated successfully!");
 
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"Internal server error: {ex.Message}");
+        //    }
+        //}
 
         // GET: api/admin/compliance-reports
         [HttpGet("compliance-reports")]

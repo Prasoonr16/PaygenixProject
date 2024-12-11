@@ -44,34 +44,34 @@ namespace PaygenixProject.Tests
             Assert.AreEqual(employees, okResult.Value);
         }
 
-        [Test]
-        public async Task GetEmployeeById_EmployeeExists_ReturnsOkResult()
-        {
-            // Arrange
-            var employee = new Employee { EmployeeID = 1, FirstName = "John", LastName = "Doe" };
-            _adminRepositoryMock.Setup(repo => repo.GetEmployeeByIdAsync(1)).ReturnsAsync(employee);
+        //[Test]
+        //public async Task GetEmployeeById_EmployeeExists_ReturnsOkResult()
+        //{
+        //    // Arrange
+        //    var employee = new Employee { EmployeeID = 1, FirstName = "John", LastName = "Doe" };
+        //    _adminRepositoryMock.Setup(repo => repo.GetEmployeeByIdAsync(1)).ReturnsAsync(employee);
 
-            // Act
-            var result = await _adminController.GetEmployeeById(1);
+        //    // Act
+        //    var result = await _adminController.GetEmployeeById(1);
 
-            // Assert
-            Assert.IsInstanceOf<OkObjectResult>(result);
-            var okResult = result as OkObjectResult;
-            Assert.AreEqual(employee, okResult.Value);
-        }
+        //    // Assert
+        //    Assert.IsInstanceOf<OkObjectResult>(result);
+        //    var okResult = result as OkObjectResult;
+        //    Assert.AreEqual(employee, okResult.Value);
+        //}
 
-        [Test]
-        public async Task GetEmployeeById_EmployeeDoesNotExist_ReturnsNotFound()
-        {
-            // Arrange
-            _adminRepositoryMock.Setup(repo => repo.GetEmployeeByIdAsync(1)).ReturnsAsync((Employee)null);
+        //[Test]
+        //public async Task GetEmployeeById_EmployeeDoesNotExist_ReturnsNotFound()
+        //{
+        //    // Arrange
+        //    _adminRepositoryMock.Setup(repo => repo.GetEmployeeByIdAsync(1)).ReturnsAsync((Employee)null);
 
-            // Act
-            var result = await _adminController.GetEmployeeById(1);
+        //    // Act
+        //    var result = await _adminController.GetEmployeeById(1);
 
-            // Assert
-            Assert.IsInstanceOf<NotFoundObjectResult>(result);
-        }
+        //    // Assert
+        //    Assert.IsInstanceOf<NotFoundObjectResult>(result);
+        //}
 
         [Test]
         public async Task UpdateEmployee_ValidEmployee_ReturnsOkResult()

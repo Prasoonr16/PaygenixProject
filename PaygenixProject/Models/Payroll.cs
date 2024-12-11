@@ -49,12 +49,13 @@ namespace NewPayGenixAPI.Models
         public decimal NetPay { get; set; }  // Final take-home pay
 
         [Required]
-        [DataType(DataType.Date)]
+        [Column(TypeName = "date")] // Specify the column type as "date"
         public DateTime StartPeriod { get; set; }
         [Required]
-        [DataType(DataType.Date)]
+        [Column(TypeName = "date")] // Specify the column type as "date"
         public DateTime EndPeriod { get; set; }
 
+        [Column(TypeName = "date")] // Specify the column type as "date"
         public DateTime GeneratedDate { get; set; }
 
         //[ForeignKey("EmployeeID")]

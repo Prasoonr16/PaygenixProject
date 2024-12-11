@@ -12,8 +12,8 @@ using NewPayGenixAPI.Data;
 namespace PaygenixProject.Migrations
 {
     [DbContext(typeof(PaygenixDBContext))]
-    [Migration("20241205170029_newDB2")]
-    partial class newDB2
+    [Migration("20241211170945_newdb")]
+    partial class newdb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -101,7 +101,7 @@ namespace PaygenixProject.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmployeeID"));
 
-                    b.Property<string>("Activestatus")
+                    b.Property<string>("ActiveStatus")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -304,7 +304,7 @@ namespace PaygenixProject.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserID"));
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
                     b.Property<DateTime?>("LastLogin")
                         .HasColumnType("datetime2");

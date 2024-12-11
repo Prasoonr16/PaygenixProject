@@ -90,6 +90,19 @@ namespace NewPayGenixAPI.Repositories
             await _context.Payrolls.AddAsync(newpayroll);
             await _context.SaveChangesAsync();
         }
+        public async Task AddUserAsync(User user)
+        {
+            try
+            {
+                _context.Users.Add(user); // Add user to the DbSet
+                await _context.SaveChangesAsync(); // Commit changes to the database
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Could not add user: {ex.Message}");
+            }
+        }
+
 
         public async Task<Payroll> GetPayrollByEmployeeIdAsync(int id)
         {

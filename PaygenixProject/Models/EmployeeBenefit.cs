@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NewPayGenixAPI.Models
 {
@@ -13,7 +14,7 @@ namespace NewPayGenixAPI.Models
         [Required]
         public int BenefitID { get; set; }  // Foreign Key to Benefit
 
-        [DataType(DataType.Date)]
+        [Column(TypeName = "date")] // Specify the column type as "date"
         public DateTime EnrolledDate { get; set; }
 
         // Navigation Properties

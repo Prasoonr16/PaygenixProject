@@ -74,10 +74,10 @@ namespace PaygenixProject.Migrations
 
                     b.Property<DateTime>("PayrollPeriod")
                         .HasMaxLength(50)
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
                     b.Property<DateTime>("ReportDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
                     b.Property<string>("ResolvedStatus")
                         .IsRequired()
@@ -117,7 +117,7 @@ namespace PaygenixProject.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime>("HireDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -161,7 +161,7 @@ namespace PaygenixProject.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("EnrolledDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
                     b.HasKey("EmployeeBenefitID");
 
@@ -181,13 +181,13 @@ namespace PaygenixProject.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LeaveRequestID"));
 
                     b.Property<DateTime?>("ApprovalDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
                     b.Property<int>("EmployeeID")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
                     b.Property<string>("LeaveType")
                         .IsRequired()
@@ -195,10 +195,10 @@ namespace PaygenixProject.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime>("RequestDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
                     b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -236,10 +236,10 @@ namespace PaygenixProject.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("EndPeriod")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
                     b.Property<DateTime>("GeneratedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
                     b.Property<decimal>("GrossPay")
                         .HasColumnType("decimal(10, 2)");
@@ -257,7 +257,7 @@ namespace PaygenixProject.Migrations
                         .HasColumnType("decimal(10, 2)");
 
                     b.Property<DateTime>("StartPeriod")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
                     b.Property<decimal>("TDS")
                         .HasColumnType("decimal(10, 2)");
@@ -301,7 +301,7 @@ namespace PaygenixProject.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserID"));
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
                     b.Property<DateTime?>("LastLogin")
                         .HasColumnType("datetime2");
@@ -335,7 +335,7 @@ namespace PaygenixProject.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RefreshTokenID"));
 
                     b.Property<DateTime>("Expires")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
                     b.Property<bool>("IsRevoked")
                         .HasColumnType("bit");

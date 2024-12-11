@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NewPayGenixAPI.Models
 {
@@ -30,8 +31,8 @@ namespace NewPayGenixAPI.Models
         [MaxLength(50)]
         public string Department { get; set; }
         public string ActiveStatus { get; set; }
-       
-        [DataType(DataType.Date)]
+
+        [Column(TypeName = "date")] // Specify the column type as "date"
         public DateTime HireDate { get; set; }
 
         
