@@ -29,11 +29,12 @@ namespace NewPayGenixAPI.Models
 
         [MaxLength(50)]
         public string Department { get; set; }
+        public string ActiveStatus { get; set; }
+       
         [DataType(DataType.Date)]
-
         public DateTime HireDate { get; set; }
 
-        public string ActiveStatus { get; set; }
+        
         public int? UserID { get; set; }  // Foreign Key to User 
 
         //[ForeignKey("UserID")]

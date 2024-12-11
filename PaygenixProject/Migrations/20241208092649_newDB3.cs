@@ -5,25 +5,24 @@
 namespace PaygenixProject.Migrations
 {
     /// <inheritdoc />
-    public partial class newdb3 : Migration
+    public partial class newDB3 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "ActiveStatus",
+            migrationBuilder.RenameColumn(
+                name: "Activestatus",
                 table: "Employees",
-                type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: "");
+                newName: "ActiveStatus");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
+            migrationBuilder.RenameColumn(
                 name: "ActiveStatus",
-                table: "Employees");
+                table: "Employees",
+                newName: "Activestatus");
         }
     }
 }

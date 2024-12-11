@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using PaygenixProject.DTO;
 
 namespace NewPayGenixAPI.DTO
 {
@@ -13,9 +14,9 @@ namespace NewPayGenixAPI.DTO
         [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$", ErrorMessage = "Password must contain at least one uppercase letter, one lowercase letter, and one number.")]
         public string Password { get; set; }
 
-        [Required(ErrorMessage = "Confirm Password is required.")]
-        [Compare("Password", ErrorMessage = "Password and Confirm Password must match.")]
-        public string ConfirmPassword { get; set; }
+        //[Required(ErrorMessage = "Confirm Password is required.")]
+        //[Compare("Password", ErrorMessage = "Password and Confirm Password must match.")]
+        //public string ConfirmPassword { get; set; }
 
         [Required(ErrorMessage = "RoleID is required.")]
         public int RoleID { get; set; } // ID of the role to assign to the user

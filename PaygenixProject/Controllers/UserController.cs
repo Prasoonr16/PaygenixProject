@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using FluentAssertions;
 using log4net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -65,7 +66,8 @@ namespace NewPayGenixAPI.Controllers
                     {
                         return BadRequest("FirstName and LastName are required for employees.");
                     }
-
+                    
+                 
                     var newEmployee = new Employee
                     {
                         UserID = newUser.UserID, // Link to the newly created user
@@ -73,9 +75,10 @@ namespace NewPayGenixAPI.Controllers
                         LastName = employeeDto.LastName,
                         Email = employeeDto.Email,
                         PhoneNumber = employeeDto.PhoneNumber,
-                        //Department = employeeDto.Department,
-                        //Position = employeeDto.Position,
-                        //HireDate = DateTime.UtcNow,
+                        Department = employeeDto.Department,
+                        Position = employeeDto.Position,
+                        ActiveStatus = employeeDto.ActiveStatus,
+                        HireDate = DateTime.UtcNow,
                     };
 
                     await _context.Employees.AddAsync(newEmployee);
@@ -211,9 +214,12 @@ namespace NewPayGenixAPI.Controllers
             {
                 var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, user.Role.RoleName),
-                new Claim("UserID", user.UserID.ToString())
+                //new Claim(ClaimTypes.Name, user.Username),
+               // new Claim(ClaimTypes.Role, user.Role.RoleName),
+                
+                    new Claim("username", user.Username),
+                    new Claim("role", user.Role.RoleName),
+                    new Claim("UserID", user.UserID.ToString())
             };
 
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
@@ -262,60 +268,60 @@ namespace NewPayGenixAPI.Controllers
             }
         }
 
-        [HttpPost("logout")]
-        [Authorize] // Ensure only authenticated users can log out
-        public async Task<IActionResult> Logout([FromBody] LogoutDTO logoutDto)
-        {
-            try
-            {
-                // Get the current user from the claims
-                var userId = int.Parse(User.FindFirst("UserID")?.Value);
+        //[HttpPost("logout")]
+        //[Authorize] // Ensure only authenticated users can log out
+        //public async Task<IActionResult> Logout([FromBody] LogoutDTO logoutDto)
+        //{
+        //    try
+        //    {
+        //        // Get the current user from the claims
+        //        var userId = int.Parse(User.FindFirst("UserID")?.Value);
 
-                _logger.Info($"Logout attempt for UserID: {userId}");
+        //        _logger.Info($"Logout attempt for UserID: {userId}");
 
-                // If a specific refresh token is provided, revoke it
-                if (!string.IsNullOrEmpty(logoutDto.RefreshToken))
-                {
-                    var token = await _context.RefreshTokens
-                        .FirstOrDefaultAsync(rt => rt.Token == logoutDto.RefreshToken && rt.UserID == userId);
+        //        // If a specific refresh token is provided, revoke it
+        //        if (!string.IsNullOrEmpty(logoutDto.RefreshToken))
+        //        {
+        //            var token = await _context.RefreshTokens
+        //                .FirstOrDefaultAsync(rt => rt.Token == logoutDto.RefreshToken && rt.UserID == userId);
 
-                    if (token == null)
-                    {
-                        _logger.Warn($"Invalid refresh token for UserID: {userId}");
-                        return BadRequest("Invalid refresh token.");
-                    }
+        //            if (token == null)
+        //            {
+        //                _logger.Warn($"Invalid refresh token for UserID: {userId}");
+        //                return BadRequest("Invalid refresh token.");
+        //            }
 
-                    // Revoke the token
-                    token.IsRevoked = true;
-                    _context.RefreshTokens.Update(token);
-                    await _context.SaveChangesAsync();
+        //            // Revoke the token
+        //            token.IsRevoked = true;
+        //            _context.RefreshTokens.Update(token);
+        //            await _context.SaveChangesAsync();
 
-                    _logger.Info($"Logout successful for UserID: {userId} (specific token revoked)");
-                    return Ok("Logged out successfully.");
-                }
+        //            _logger.Info($"Logout successful for UserID: {userId} (specific token revoked)");
+        //            return Ok("Logged out successfully.");
+        //        }
 
-                // Revoke all refresh tokens for the user (optional)
-                var allTokens = await _context.RefreshTokens
-                    .Where(rt => rt.UserID == userId && !rt.IsRevoked && !rt.IsUsed)
-                    .ToListAsync();
+        //        // Revoke all refresh tokens for the user (optional)
+        //        var allTokens = await _context.RefreshTokens
+        //            .Where(rt => rt.UserID == userId && !rt.IsRevoked && !rt.IsUsed)
+        //            .ToListAsync();
 
-                foreach (var refreshToken in allTokens)
-                {
-                    refreshToken.IsRevoked = true;
-                }
+        //        foreach (var refreshToken in allTokens)
+        //        {
+        //            refreshToken.IsRevoked = true;
+        //        }
 
-                _context.RefreshTokens.UpdateRange(allTokens);
-                await _context.SaveChangesAsync();
+        //        _context.RefreshTokens.UpdateRange(allTokens);
+        //        await _context.SaveChangesAsync();
 
-                _logger.Info($"Logout successful for UserID: {userId} (all tokens revoked)");
-                return Ok("Logged out successfully from all devices.");
-            }
-            catch (Exception ex)
-            {
-                _logger.Error($"An error occurred during logout: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred.");
-            }
-        }
+        //        _logger.Info($"Logout successful for UserID: {userId} (all tokens revoked)");
+        //        return Ok("Logged out successfully from all devices.");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.Error($"An error occurred during logout: {ex.Message}");
+        //        return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred.");
+        //    }
+        //}
 
         // Helper Method to Verify Password 
         private bool VerifyPassword(string inputPassword, string storedPasswordHash)

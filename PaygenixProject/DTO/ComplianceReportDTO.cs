@@ -9,7 +9,7 @@
         public string ComplianceStatus { get; set; }
         public string IssuesFound { get; set; }
         public string ResolvedStatus { get; set; }
-        //public int GeneratedBy { get; set; }
+       
         public string Comments { get; set; }
     }
 }

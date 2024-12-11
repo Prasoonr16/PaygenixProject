@@ -13,6 +13,8 @@ namespace NewPayGenixAPI.Repositories
         Task<IEnumerable<User>> GetAllUserAsync();
         Task<User> GetUserByIdAsync(int id);
         Task UpdateUserAsync(User user);
+
+        Task<IEnumerable<Payroll>> GetAllPayrollsAsync();
         Task AddPayrollAsync(Payroll payroll);
         Task<Payroll> GetPayrollByEmployeeIdAsync(int id);
         Task UpdatePayrollAsync(Payroll payroll);

@@ -61,6 +61,11 @@ namespace NewPayGenixAPI.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<IEnumerable<Payroll>> GetAllPayrollsAsync()
+        {
+            return await _context.Payrolls.ToListAsync();
+        }
+
         public async Task AddPayrollAsync(Payroll payroll)
         {
             var newpayroll = new Payroll
