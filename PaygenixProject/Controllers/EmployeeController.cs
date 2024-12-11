@@ -106,15 +106,20 @@ namespace NewPayGenixAPI.Controllers
         [HttpPost("generate-compliance-report")]
         public async Task<IActionResult> GenerateComplianceReport([FromBody] ComplianceReportDTO reportDto)
         {
+           
             try
             {
+                //reportDto.ComplianceStatus = "Pending";
+                //reportDto.ResolvedStatus = "Pending";
                 var report = new ComplianceReport
                 {
                     EmployeeID = reportDto.EmployeeID,
-                    ComplianceStatus = "Pending",
+                    ReportDate= DateTime.UtcNow.Date,
+                    PayrollPeriod= reportDto.PayrollPeriod,
+                    ComplianceStatus = reportDto.ComplianceStatus,
                     IssuesFound = reportDto.IssuesFound,
-                    ResolvedStatus = "Pending",
-                    Comments = reportDto.Comments,
+                    ResolvedStatus = reportDto.ResolvedStatus,
+                    Comments = reportDto.Comments
                 };
 
                 await _employeeRepository.GenerateComplianceReportAsync(report);

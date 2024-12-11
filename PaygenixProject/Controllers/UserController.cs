@@ -97,51 +97,51 @@ namespace NewPayGenixAPI.Controllers
             }
         }
 
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginDTO loginDto)
-        {
-            try
+            [HttpPost("login")]
+            public async Task<IActionResult> Login([FromBody] LoginDTO loginDto)
             {
-                _logger.Info($"Login attempt for username: {loginDto.Username}");
-
-                // Validate user credentials
-                var user = await _context.Users
-                    .Include(u => u.Role)
-                    .FirstOrDefaultAsync(u => u.Username == loginDto.Username && u.RoleID == loginDto.RoleID);
-
-                if (user == null || !VerifyPassword(loginDto.Password, user.PasswordHash))
+                try
                 {
-                    _logger.Warn($"Login failed for username: {loginDto.Username}");
-                    return Unauthorized("Invalid username or password.");
+                    _logger.Info($"Login attempt for username: {loginDto.Username}");
+
+                    // Validate user credentials
+                    var user = await _context.Users
+                        .Include(u => u.Role)
+                        .FirstOrDefaultAsync(u => u.Username == loginDto.Username && u.RoleID == loginDto.RoleID);
+
+                    if (user == null || !VerifyPassword(loginDto.Password, user.PasswordHash))
+                    {
+                        _logger.Warn($"Login failed for username: {loginDto.Username}");
+                        return Unauthorized("Invalid username or password.");
+                    }
+
+                    // Generate JWT Token
+                    var token = GenerateAccessToken(user);
+
+                    // Generate Refresh Token
+                    var refreshToken = GenerateRefreshToken();
+                    refreshToken.UserID = user.UserID;
+
+                    // Store Refresh Token in the database
+                    await _context.RefreshTokens.AddAsync(refreshToken);
+                    await _context.SaveChangesAsync();
+
+                    _logger.Info($"Login successful for username: {loginDto.Username}, Role: {user.Role.RoleName}");
+
+
+                    return Ok(new
+                    {
+                        Token = token,
+                        refreshToken = refreshToken.Token,
+                        Role = user.Role.RoleName
+                    });
                 }
-
-                // Generate JWT Token
-                var token = GenerateAccessToken(user);
-
-                // Generate Refresh Token
-                var refreshToken = GenerateRefreshToken();
-                refreshToken.UserID = user.UserID;
-
-                // Store Refresh Token in the database
-                await _context.RefreshTokens.AddAsync(refreshToken);
-                await _context.SaveChangesAsync();
-
-                _logger.Info($"Login successful for username: {loginDto.Username}, Role: {user.Role.RoleName}");
-
-
-                return Ok(new
+                catch (Exception ex)
                 {
-                    Token = token,
-                    refreshToken = refreshToken.Token,
-                    Role = user.Role.RoleName
-                });
+                    _logger.Error($"An error occurred during login: {ex.Message}");
+                    return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred.");
+                }
             }
-            catch (Exception ex)
-            {
-                _logger.Error($"An error occurred during login: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred.");
-            }
-        }
 
         [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken([FromBody] string refreshToken)
@@ -211,8 +211,8 @@ namespace NewPayGenixAPI.Controllers
             {
                 var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, user.Role.RoleName),
+                new Claim("username", user.Username),
+                new Claim("role", user.Role.RoleName),
                 new Claim("UserID", user.UserID.ToString())
             };
 

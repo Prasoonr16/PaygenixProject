@@ -145,7 +145,7 @@ namespace NewPayGenixAPI.Controllers
                 {
                     EmployeeID = payrollDto.EmployeeID,
                     BasicSalary = payrollDto.BasicSalary,
-                    HRA = (20/100)*payrollDto.BasicSalary,
+                    HRA = payrollDto.BasicSalary,
                     LTA = payrollDto.LTA,
                     TravellingAllowance = payrollDto.TravellingAllowance,
                     DA = payrollDto.DA,

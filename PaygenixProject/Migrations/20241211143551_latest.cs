@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PaygenixProject.Migrations
 {
     /// <inheritdoc />
-    public partial class newDB : Migration
+    public partial class latest : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -75,6 +75,7 @@ namespace PaygenixProject.Migrations
                     Position = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Department = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     HireDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ActiveStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -88,6 +89,29 @@ namespace PaygenixProject.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RefreshTokens",
+                columns: table => new
+                {
+                    RefreshTokenID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserID = table.Column<int>(type: "int", nullable: false),
+                    Token = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Expires = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsRevoked = table.Column<bool>(type: "bit", nullable: false),
+                    IsUsed = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RefreshTokens", x => x.RefreshTokenID);
+                    table.ForeignKey(
+                        name: "FK_RefreshTokens_Users_UserID",
+                        column: x => x.UserID,
+                        principalTable: "Users",
+                        principalColumn: "UserID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ComplianceReports",
                 columns: table => new
                 {
@@ -95,11 +119,10 @@ namespace PaygenixProject.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ReportDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EmployeeID = table.Column<int>(type: "int", nullable: true),
-                    PayrollIssued = table.Column<DateTime>(type: "datetime2", maxLength: 50, nullable: false),
+                    PayrollPeriod = table.Column<DateTime>(type: "datetime2", maxLength: 50, nullable: false),
                     ComplianceStatus = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     IssuesFound = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ResolvedStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    GeneratedBy = table.Column<int>(type: "int", nullable: false),
                     Comments = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -184,8 +207,8 @@ namespace PaygenixProject.Migrations
                     Deduction = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     TaxAmount = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     NetPay = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    StartPeriod = table.Column<DateTime>(type: "datetime2", maxLength: 50, nullable: false),
-                    EndPeriod = table.Column<DateTime>(type: "datetime2", maxLength: 50, nullable: false),
+                    StartPeriod = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndPeriod = table.Column<DateTime>(type: "datetime2", nullable: false),
                     GeneratedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -232,6 +255,11 @@ namespace PaygenixProject.Migrations
                 column: "EmployeeID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_RefreshTokens_UserID",
+                table: "RefreshTokens",
+                column: "UserID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_RoleID",
                 table: "Users",
                 column: "RoleID");
@@ -251,6 +279,9 @@ namespace PaygenixProject.Migrations
 
             migrationBuilder.DropTable(
                 name: "Payrolls");
+
+            migrationBuilder.DropTable(
+                name: "RefreshTokens");
 
             migrationBuilder.DropTable(
                 name: "Benefits");
