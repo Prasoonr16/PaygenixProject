@@ -11,5 +11,9 @@ namespace NewPayGenixAPI.Repositories
         Task RequestLeaveAsync(LeaveRequest leaveRequest);
 
         Task GenerateComplianceReportAsync(ComplianceReport report);
+
+        //--------------------------------------------//
+        Task<Employee> GetEmployeeDetailsByUserIDAsync(int userId);
+        Task<IEnumerable<Payroll>> GetPayStubsByUserIDAsync(int userId);
     }
 }

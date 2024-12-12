@@ -12,7 +12,7 @@ using NewPayGenixAPI.Data;
 namespace PaygenixProject.Migrations
 {
     [DbContext(typeof(PaygenixDBContext))]
-    [Migration("20241211171424_dateadded")]
+    [Migration("20241211193604_dateadded")]
     partial class dateadded
     {
         /// <inheritdoc />

@@ -217,14 +217,8 @@ namespace NewPayGenixAPI.Controllers
 
                 new Claim("username", user.Username),
                 new Claim("role", user.Role.RoleName),
-                new Claim("UserID", user.UserID.ToString()),
+                new Claim("UserID", user.UserID.ToString())
 
-                //new Claim(ClaimTypes.Name, user.Username),
-               // new Claim(ClaimTypes.Role, user.Role.RoleName),
-                
-                    new Claim("username", user.Username),
-                    new Claim("role", user.Role.RoleName),
-                    new Claim("UserID", user.UserID.ToString())
             };
 
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));

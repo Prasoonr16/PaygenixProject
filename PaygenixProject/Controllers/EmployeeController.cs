@@ -36,6 +36,8 @@ namespace NewPayGenixAPI.Controllers
             }
         }
 
+       
+
         // Update Personal Information
         [HttpPut("{id}/update-info")]
         public async Task<IActionResult> UpdatePersonalInfo(int id, [FromBody] EmployeeDTO employeeDto)
@@ -125,6 +127,38 @@ namespace NewPayGenixAPI.Controllers
                 await _employeeRepository.GenerateComplianceReportAsync(report);
                 return CreatedAtAction(nameof(GenerateComplianceReport), new { id = report.ReportID }, report);
 
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        //------------------------------------------------------------//
+            // View Personal Details based on User ID
+            [HttpGet("userid/{id}")]
+            public async Task<IActionResult> GetEmployeeDetailsByUserID(int id)
+            {
+                try
+                {
+                    var employee = await _employeeRepository.GetEmployeeDetailsByUserIDAsync(id);
+                    if (employee == null) return NotFound("Employee not found");
+                    return Ok(employee);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+        // View Pay Stubs By UserID
+        [HttpGet("{userid}/pay-stubs-by-userid")]
+        public async Task<IActionResult> GetPayStubsByUserID(int userid)
+        {
+            try
+            {
+                var payStubs = await _employeeRepository.GetPayStubsByUserIDAsync(userid);
+                return Ok(payStubs);
             }
             catch (Exception ex)
             {
