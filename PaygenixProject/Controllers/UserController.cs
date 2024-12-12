@@ -248,6 +248,33 @@ namespace NewPayGenixAPI.Controllers
             }
         }
 
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDTO resetPasswordDto)
+        {
+            try
+            {
+                // Step 1: Verify if the user exists using UserID
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.UserID == resetPasswordDto.UserID);
+                if (user == null) return NotFound("User not found");
+
+                // Step 2: Verify the existing password
+                if (user.PasswordHash != resetPasswordDto.ExistingPassword)
+                {
+                    return BadRequest("Existing password is incorrect.");
+                }
+
+                // Step 3: Update the password in the database
+                user.PasswordHash = resetPasswordDto.NewPassword;
+                _context.Users.Update(user);
+                await _context.SaveChangesAsync();
+
+                return Ok("Password has been reset successfully!");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
         // Method to generate a Refresh Token
         private RefreshToken GenerateRefreshToken()
         {
