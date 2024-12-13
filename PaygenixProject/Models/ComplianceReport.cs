@@ -11,10 +11,13 @@ namespace NewPayGenixAPI.Models
         public DateTime ReportDate { get; set; }
         public int? EmployeeID { get; set; }  // Foreign Key to Employee
 
-        [MaxLength(50)]
+        [Required]
         [Column(TypeName = "date")] // Specify the column type as "date"
-
-        public DateTime PayrollPeriod{ get; set; }
+        public DateTime StartPeriod { get; set; }
+       
+        [Required]
+        [Column(TypeName = "date")] // Specify the column type as "date"
+        public DateTime EndPeriod { get; set; }
 
         [MaxLength(50)]
         public string ComplianceStatus { get; set; }

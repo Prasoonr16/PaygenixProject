@@ -113,7 +113,7 @@ namespace NewPayGenixAPI.Controllers
                     PasswordHash = userDto.PasswordHash, // Assuming password is already hashed
                     RoleID = userDto.RoleID,
                     CreatedDate = userDto.CreatedDate.Date, // Automatically set the created date
-                    LastLogin = null
+                    Email = userDto.Email,
                 };
 
                 // Add the user via the repository
@@ -138,7 +138,9 @@ namespace NewPayGenixAPI.Controllers
 
                 user.UserID = userDTO.UserID;
                 user.Username = userDTO.Username;
+                user.Email = userDTO.Email;
                 user.RoleID = userDTO.RoleID;
+
 
                 await _adminRepository.UpdateUserAsync(user);
                 return Ok("User updated successfully!");
@@ -179,18 +181,20 @@ namespace NewPayGenixAPI.Controllers
                 var hra = 0.20m * basicSalary; // 20% of Basic Salary
                 var travellingAllowance = 0.10m * basicSalary; // 10% of Basic Salary
                 var da = 0.15m * basicSalary; // 15% of Basic Salary
+                var lta = 0.15m * basicSalary;
+                var tds = 0.10m * basicSalary;
 
                 // Gross Pay
-                var grossPay = basicSalary + hra + payrollDto.LTA + travellingAllowance + da;
+                var grossPay = 0;
 
                 // Deductions
                 var pf = 0.12m * basicSalary; // 12% of Basic Salary
-                var esi = grossPay <= 21000 ? 0.075m * grossPay : 0; // ESI only for gross pay <= 21,000
-                var tds = payrollDto.TaxAmount; // Tax amount provided
-                var totalDeductions = pf + tds + esi;
+                var esi = 0.075m * grossPay; // ESI only for gross pay <= 21,000
+                
+                var totalDeductions = 0;
 
                 // Net Pay
-                var netPay = grossPay - totalDeductions;
+                var netPay = 0;
 
                 var payroll = new Payroll
                 {
@@ -200,7 +204,7 @@ namespace NewPayGenixAPI.Controllers
                     //BasicSalary = payrollDto.BasicSalary,
                     BasicSalary = basicSalary,
                     HRA = hra,
-                    LTA = payrollDto.LTA,
+                    LTA = lta,
                     //TravellingAllowance = payrollDto.TravellingAllowance,
                     TravellingAllowance = travellingAllowance,
                     //DA = payrollDto.DA,
@@ -215,8 +219,7 @@ namespace NewPayGenixAPI.Controllers
                     ESI = esi,
                     //Deduction = payrollDto.Deduction,
                     Deduction = totalDeductions,
-                    //TaxAmount = payrollDto.TaxAmount,
-                    TaxAmount = tds,
+                    
                     //NetPay = payrollDto.NetPay,
                     NetPay = netPay,
                     StartPeriod = payrollDto.StartPeriod,

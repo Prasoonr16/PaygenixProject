@@ -43,9 +43,6 @@ namespace NewPayGenixAPI.Models
         public decimal Deduction { get; set; }
 
         [Column(TypeName = "decimal(10, 2)")]
-        public decimal TaxAmount { get; set; }
-
-        [Column(TypeName = "decimal(10, 2)")]
         public decimal NetPay { get; set; }  // Final take-home pay
 
         [Required]

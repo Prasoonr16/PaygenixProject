@@ -5,7 +5,8 @@
         public int ReportID { get; set; }
         public DateTime ReportDate { get; set; }
         public int? EmployeeID { get; set; }
-        public DateTime PayrollPeriod { get; set; }
+        public DateTime StartPeriod { get; set; }
+        public DateTime EndPeriod { get; set; }
         public string ComplianceStatus { get; set; }
         public string IssuesFound { get; set; }
         public string ResolvedStatus { get; set; }

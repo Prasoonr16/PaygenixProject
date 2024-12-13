@@ -117,7 +117,8 @@ namespace NewPayGenixAPI.Controllers
                 {
                     ReportDate = DateTime.UtcNow,
                     EmployeeID = reportDto.EmployeeID,
-                    PayrollPeriod = reportDto.PayrollPeriod,
+                    StartPeriod = reportDto.StartPeriod,
+                    EndPeriod = reportDto.EndPeriod,
                     ComplianceStatus = "Pending",
                     IssuesFound = reportDto.IssuesFound,
                     ResolvedStatus = "Pending",
