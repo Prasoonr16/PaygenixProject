@@ -40,7 +40,6 @@ namespace PaygenixProject.Tests
                 TDS = 2000,
                 ESI = 1000,
                 Deduction = 8000,
-                TaxAmount = 2000,
                 NetPay = 62000,
                 StartPeriod = DateTime.UtcNow.AddMonths(-1),
                 EndPeriod = DateTime.UtcNow

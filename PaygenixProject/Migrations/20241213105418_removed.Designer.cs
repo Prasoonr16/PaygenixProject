@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NewPayGenixAPI.Data;
 
@@ -11,9 +12,11 @@ using NewPayGenixAPI.Data;
 namespace PaygenixProject.Migrations
 {
     [DbContext(typeof(PaygenixDBContext))]
-    partial class PaygenixDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241213105418_removed")]
+    partial class removed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -68,13 +71,13 @@ namespace PaygenixProject.Migrations
                     b.Property<int?>("EmployeeID")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("EndPeriod")
-                        .HasMaxLength(50)
-                        .HasColumnType("date");
-
                     b.Property<string>("IssuesFound")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("PayrollPeriod")
+                        .HasMaxLength(50)
+                        .HasColumnType("date");
 
                     b.Property<DateTime>("ReportDate")
                         .HasColumnType("date");
@@ -82,10 +85,6 @@ namespace PaygenixProject.Migrations
                     b.Property<string>("ResolvedStatus")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("StartPeriod")
-                        .HasMaxLength(50)
-                        .HasColumnType("date");
 
                     b.HasKey("ReportID");
 
@@ -304,9 +303,8 @@ namespace PaygenixProject.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("date");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime?>("LastLogin")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()

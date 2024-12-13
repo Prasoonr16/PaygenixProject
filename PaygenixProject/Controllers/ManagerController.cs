@@ -61,5 +61,24 @@ namespace NewPayGenixAPI.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+        [HttpGet("leave-requests")]
+        public async Task<IActionResult> GetAllLeaveRequests()
+        {
+            try
+            {
+                // Fetch all leave requests from the repository
+                var leaveRequests = await _managerRepository.GetAllLeaveRequestsAsync();
+
+                if (!leaveRequests.Any())
+                    return NotFound("No leave requests found.");
+
+                return Ok(leaveRequests);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
     }
 }

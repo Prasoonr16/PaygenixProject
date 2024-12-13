@@ -18,13 +18,15 @@ namespace NewPayGenixAPI.Models
         [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$", ErrorMessage = "Password must contain at least one uppercase letter, one lowercase letter, and one number.")]
         public string? PasswordHash { get; set; }
 
+        [Required(ErrorMessage = "Email is required.")]
+        [EmailAddress(ErrorMessage = "Invalid Email Address.")]
+        public string Email { get; set; }
+
         [Required]
         public int RoleID { get; set; }  // Foreign Key to Role
 
         [Column(TypeName = "date")] // Specify the column type as "date"
         public DateTime CreatedDate { get; set; }
-        [DataType(DataType.Date)]
-        public DateTime? LastLogin { get; set; }
 
         //[ForeignKey("RoleID")]
 

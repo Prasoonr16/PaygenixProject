@@ -113,7 +113,6 @@ namespace NewPayGenixAPI.Controllers
                     PasswordHash = userDto.PasswordHash, // Assuming password is already hashed
                     RoleID = userDto.RoleID,
                     CreatedDate = userDto.CreatedDate.Date, // Automatically set the created date
-                    LastLogin = null
                 };
 
                 // Add the user via the repository
@@ -186,7 +185,7 @@ namespace NewPayGenixAPI.Controllers
                 // Deductions
                 var pf = 0.12m * basicSalary; // 12% of Basic Salary
                 var esi = grossPay <= 21000 ? 0.075m * grossPay : 0; // ESI only for gross pay <= 21,000
-                var tds = payrollDto.TaxAmount; // Tax amount provided
+                var tds = 0.10m * basicSalary; // Tax amount provided
                 var totalDeductions = pf + tds + esi;
 
                 // Net Pay
@@ -216,7 +215,6 @@ namespace NewPayGenixAPI.Controllers
                     //Deduction = payrollDto.Deduction,
                     Deduction = totalDeductions,
                     //TaxAmount = payrollDto.TaxAmount,
-                    TaxAmount = tds,
                     //NetPay = payrollDto.NetPay,
                     NetPay = netPay,
                     StartPeriod = payrollDto.StartPeriod,

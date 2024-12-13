@@ -47,7 +47,6 @@ namespace NewPayGenixAPI.Repositories
                 TDS = payrollDto.TDS,
                 ESI = payrollDto.ESI,
                 Deduction = totalDeductions,
-                TaxAmount = payrollDto.TaxAmount,
                 NetPay = netPay,
                 StartPeriod = payrollDto.StartPeriod,
                 EndPeriod = payrollDto.EndPeriod,

@@ -14,7 +14,12 @@ namespace NewPayGenixAPI.Models
         [MaxLength(50)]
         [Column(TypeName = "date")] // Specify the column type as "date"
 
-        public DateTime PayrollPeriod{ get; set; }
+        public DateTime StartPeriod{ get; set; }
+
+        [MaxLength(50)]
+        [Column(TypeName = "date")] // Specify the column type as "date"
+
+        public DateTime EndPeriod { get; set; }
 
         [MaxLength(50)]
         public string ComplianceStatus { get; set; }

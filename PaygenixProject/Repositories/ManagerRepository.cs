@@ -57,6 +57,19 @@ namespace NewPayGenixAPI.Repositories
         //    _context.LeaveRequests.Update(leaveRequest);
         //    await _context.SaveChangesAsync();
         //}
+        public async Task<List<LeaveRequest>> GetAllLeaveRequestsAsync()
+        {
+            try
+            {
+                return await _context.LeaveRequests.ToListAsync(); // Fetch all leave requests
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error fetching leave requests: {ex.Message}");
+            }
+        }
+
     }
+        
 
 }

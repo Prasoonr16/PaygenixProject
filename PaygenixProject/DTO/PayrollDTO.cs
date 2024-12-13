@@ -14,7 +14,6 @@
         public decimal TDS { get; set; }
         public decimal ESI { get; set; }
         public decimal Deduction { get; set; }
-        public decimal TaxAmount { get; set; }
         public decimal NetPay { get; set; }
         public DateTime StartPeriod { get; set; }
         public DateTime EndPeriod { get; set; }

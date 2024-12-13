@@ -9,5 +9,7 @@ namespace NewPayGenixAPI.Repositories
         //Task ApproveLeaveRequestAsync(int leaveRequestId, bool isApproved);
         Task<IEnumerable<LeaveRequest>> GetLeaveRequestsByEmployeeIdAsync(int employeeId);
         Task UpdateLeaveRequestStatusAsync(int leaveRequestId, string status);
-        }
+
+        Task<List<LeaveRequest>> GetAllLeaveRequestsAsync();
+    }
     }

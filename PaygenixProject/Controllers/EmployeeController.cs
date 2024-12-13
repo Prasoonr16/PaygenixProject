@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NewPayGenixAPI.DTO;
 using NewPayGenixAPI.Models;
 using NewPayGenixAPI.Repositories;
@@ -117,7 +118,8 @@ namespace NewPayGenixAPI.Controllers
                 {
                     ReportDate = DateTime.UtcNow,
                     EmployeeID = reportDto.EmployeeID,
-                    PayrollPeriod = reportDto.PayrollPeriod,
+                    StartPeriod = reportDto.StartPeriod,
+                    EndPeriod = reportDto.EndPeriod,
                     ComplianceStatus = "Pending",
                     IssuesFound = reportDto.IssuesFound,
                     ResolvedStatus = "Pending",
@@ -159,6 +161,27 @@ namespace NewPayGenixAPI.Controllers
             {
                 var payStubs = await _employeeRepository.GetPayStubsByUserIDAsync(userid);
                 return Ok(payStubs);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("{employeeId}/leave-requests")]
+        public async Task<IActionResult> GetLeaveRequestsByEmployeeId(int employeeId)
+        {
+            try
+            {
+                // Fetch leave requests via repository
+                var leaveRequests = await _employeeRepository.GetLeaveRequestsByEmployeeIdAsync(employeeId);
+
+                if (leaveRequests == null || leaveRequests.Count == 0)
+                {
+                    return NotFound($"No leave requests found for EmployeeID {employeeId}.");
+                }
+
+                return Ok(leaveRequests);
             }
             catch (Exception ex)
             {
