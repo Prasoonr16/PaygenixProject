@@ -30,7 +30,8 @@ namespace NewPayGenixAPI.Repositories
 
             // Calculate payroll details
             var grossPay = payrollDto.BasicSalary + payrollDto.HRA + payrollDto.LTA + payrollDto.TravellingAllowance;
-            var totalDeductions = payrollDto.PF + payrollDto.TDS + payrollDto.ESI;
+            var esi = 0.075m * grossPay;
+            var totalDeductions = payrollDto.PF + payrollDto.TDS + esi;
             var netPay = grossPay - totalDeductions;
 
             // Create a new payroll entry
@@ -45,7 +46,7 @@ namespace NewPayGenixAPI.Repositories
                 GrossPay = grossPay,
                 PF = payrollDto.PF,
                 TDS = payrollDto.TDS,
-                ESI = payrollDto.ESI,
+                ESI = esi,
                 Deduction = totalDeductions,
                 NetPay = netPay,
                 StartPeriod = payrollDto.StartPeriod,

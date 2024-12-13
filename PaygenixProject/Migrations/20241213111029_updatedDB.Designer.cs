@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NewPayGenixAPI.Data;
 
@@ -11,9 +12,11 @@ using NewPayGenixAPI.Data;
 namespace PaygenixProject.Migrations
 {
     [DbContext(typeof(PaygenixDBContext))]
-    partial class PaygenixDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241213111029_updatedDB")]
+    partial class updatedDB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -69,10 +72,6 @@ namespace PaygenixProject.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("EndPeriod")
-<<<<<<< HEAD
-                        .HasMaxLength(50)
-=======
->>>>>>> bab6098b2e91514a8a095c91f8d3fb5294db04ae
                         .HasColumnType("date");
 
                     b.Property<string>("IssuesFound")
@@ -87,10 +86,6 @@ namespace PaygenixProject.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("StartPeriod")
-<<<<<<< HEAD
-                        .HasMaxLength(50)
-=======
->>>>>>> bab6098b2e91514a8a095c91f8d3fb5294db04ae
                         .HasColumnType("date");
 
                     b.HasKey("ReportID");
