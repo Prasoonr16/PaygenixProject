@@ -69,10 +69,7 @@ namespace PaygenixProject.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("EndPeriod")
-<<<<<<< HEAD
                         .HasMaxLength(50)
-=======
->>>>>>> bab6098b2e91514a8a095c91f8d3fb5294db04ae
                         .HasColumnType("date");
 
                     b.Property<string>("IssuesFound")
@@ -87,10 +84,7 @@ namespace PaygenixProject.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("StartPeriod")
-<<<<<<< HEAD
                         .HasMaxLength(50)
-=======
->>>>>>> bab6098b2e91514a8a095c91f8d3fb5294db04ae
                         .HasColumnType("date");
 
                     b.HasKey("ReportID");

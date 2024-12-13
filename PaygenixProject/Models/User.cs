@@ -27,11 +27,6 @@ namespace NewPayGenixAPI.Models
 
         [Column(TypeName = "date")] // Specify the column type as "date"
         public DateTime CreatedDate { get; set; }
-<<<<<<< HEAD
-=======
-        
-       
->>>>>>> bab6098b2e91514a8a095c91f8d3fb5294db04ae
 
         //[ForeignKey("RoleID")]
 
