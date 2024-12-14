@@ -37,7 +37,7 @@ namespace NewPayGenixAPI.Controllers
             }
         }
 
-       
+
 
         // Update Personal Information
         [HttpPut("{id}/update-info")]
@@ -109,7 +109,7 @@ namespace NewPayGenixAPI.Controllers
         [HttpPost("generate-compliance-report")]
         public async Task<IActionResult> GenerateComplianceReport([FromBody] ComplianceReportDTO reportDto)
         {
-           
+
             try
             {
                 //reportDto.ComplianceStatus = "Pending";
@@ -137,21 +137,21 @@ namespace NewPayGenixAPI.Controllers
         }
 
         //------------------------------------------------------------//
-            // View Personal Details based on User ID
-            [HttpGet("userid/{id}")]
-            public async Task<IActionResult> GetEmployeeDetailsByUserID(int id)
+        // View Personal Details based on User ID
+        [HttpGet("userid/{id}")]
+        public async Task<IActionResult> GetEmployeeDetailsByUserID(int id)
+        {
+            try
             {
-                try
-                {
-                    var employee = await _employeeRepository.GetEmployeeDetailsByUserIDAsync(id);
-                    if (employee == null) return NotFound("Employee not found");
-                    return Ok(employee);
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(500, $"Internal server error: {ex.Message}");
-                }
+                var employee = await _employeeRepository.GetEmployeeDetailsByUserIDAsync(id);
+                if (employee == null) return NotFound("Employee not found");
+                return Ok(employee);
             }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
         // View Pay Stubs By UserID
         [HttpGet("{userid}/pay-stubs-by-userid")]
@@ -188,5 +188,28 @@ namespace NewPayGenixAPI.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+            //View leave Request by userID
+
+            [HttpGet("leave-requests/{userId}")]
+            public async Task<IActionResult> GetLeaveRequestsByUserId(int userId)
+            {
+                try
+                {
+                    // Fetch leave requests via repository
+                    var leaveRequests = await _employeeRepository.GetLeaveRequestsByUserIdAsync(userId);
+
+                    if (leaveRequests == null || leaveRequests.Count == 0)
+                    {
+                        return NotFound($"No leave requests found.");
+                    }
+
+                    return Ok(leaveRequests);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+        }
     }
-}

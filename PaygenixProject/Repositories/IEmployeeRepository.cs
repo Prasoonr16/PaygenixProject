@@ -17,5 +17,7 @@ namespace NewPayGenixAPI.Repositories
         Task<IEnumerable<Payroll>> GetPayStubsByUserIDAsync(int userId);
 
         Task<List<LeaveRequest>> GetLeaveRequestsByEmployeeIdAsync(int employeeId);
+
+        Task<List<LeaveRequest>> GetLeaveRequestsByUserIdAsync(int userId);
     }
 }
