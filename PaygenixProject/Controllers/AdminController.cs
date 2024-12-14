@@ -7,6 +7,7 @@ using NewPayGenixAPI.DTO;
 using NewPayGenixAPI.Models;
 using NewPayGenixAPI.Repositories;
 using PaygenixProject.DTO;
+using PaygenixProject.Repositories;
 
 namespace NewPayGenixAPI.Controllers
 {
@@ -16,11 +17,14 @@ namespace NewPayGenixAPI.Controllers
     public class AdminController : ControllerBase
     {
         private readonly IAdminRepository _adminRepository;
+        private readonly EmailService _emailService;
+
         //private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public AdminController(IAdminRepository adminRepository)
+        public AdminController(IAdminRepository adminRepository, EmailService emailService)
         {
             _adminRepository = adminRepository;
+            _emailService = emailService;
         }
 
         // Manage Employee Information
@@ -118,6 +122,23 @@ namespace NewPayGenixAPI.Controllers
 
                 // Add the user via the repository
                 await _adminRepository.AddUserAsync(user);
+                var emailBody = $@"
+                Hello {userDto.Username},
+                
+                Your account has been created successfully! Below are your login details:
+                - User ID: {user.UserID}
+                - Username: {userDto.Username}
+                - Password: {userDto.PasswordHash}
+                - Role ID: {userDto.RoleID}
+                
+                Please use these details to log in.
+
+                Thank you,
+                Admin Team
+            ";
+
+                // Step 3: Send email
+                await _emailService.SendEmailAsync(userDto.Email, "Your Login Details", emailBody);
 
                 return CreatedAtAction(nameof(AddUser), new { id = user.UserID }, user);
             }
