@@ -82,7 +82,7 @@ namespace NewPayGenixAPI.Controllers
 
                 if (existingEmployee == null)
                 {
-                    var employee = new Employee
+                    var newemployee = new Employee
                     {
                         EmployeeID = employeeDto.EmployeeID,
                         FirstName = employeeDto.FirstName,
@@ -92,7 +92,7 @@ namespace NewPayGenixAPI.Controllers
                         UserID = employeeDto.UserID
                         
                     };
-                    await _employeeRepository.AddEmployeeAsync(employee);
+                    await _employeeRepository.AddEmployeeAsync(newemployee);
                     return Ok("Employee added successfully.");
                 }
                 else

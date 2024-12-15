@@ -18,7 +18,11 @@ namespace NewPayGenixAPI.Controllers
         private readonly IAdminRepository _adminRepository;
         private readonly EmailService _emailService;
 
-        public PayrollProcessorController(IPayrollProcessorRepository payrollProcessorRepository, IAdminRepository adminRepository,EmailService emailService)
+        public PayrollProcessorController(IPayrollProcessorRepository object1, IAdminRepository object2)
+        {
+        }
+
+        public PayrollProcessorController(IPayrollProcessorRepository payrollProcessorRepository, IAdminRepository adminRepository, EmailService emailService)
         {
             _payrollProcessorRepository = payrollProcessorRepository;
             _adminRepository = adminRepository;
@@ -166,41 +170,37 @@ namespace NewPayGenixAPI.Controllers
                     // Send the email
                     await _emailService.SendEmailAsync(employee.Email, "Payroll Processed", emailBody);
 
-                    return Ok("Payroll verified and email sent successfully.")
+                    return Ok("Payroll verified and email sent successfully.");
                 }
-
-                // Log failed payroll verification attempt
-                await _adminRepository.LogAuditTrailAsync(new AuditTrail
-                {
-                    Action = "Verify Payroll Failed",
-                    PerformedBy = "PayrollProcessor", // Get the currently logged-in user
-                    Timestamp = DateTime.Now,
-                    Details = $"Failed to verify payroll for PayrollID {payrollId}. Verification failed."
-                });
-
-                return BadRequest("Payroll verification failed");
-            }
-            catch (Exception ex)
-            {
-                // Log error if verification fails due to an exception
-                await _adminRepository.LogAuditTrailAsync(new AuditTrail
-                {
-                    Action = "Verify Payroll Error",
-                    PerformedBy = "PayrollProcessor", // Get the currently logged-in user
-                    Timestamp = DateTime.Now,
-                    Details = $"Error while verifying payroll for PayrollID {payrollId}. Error: {ex.Message}"
-                });
-
-                return BadRequest(ex.Message);
-                    ;
-                }
-
-                return BadRequest("Payroll verification failed.");
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
+            // Log failed payroll verification attempt
+            await _adminRepository.LogAuditTrailAsync(new AuditTrail
+            {
+                Action = "Verify Payroll Failed",
+                PerformedBy = "PayrollProcessor", // Get the currently logged-in user
+                Timestamp = DateTime.Now,
+                Details = $"Failed to verify payroll for PayrollID {payrollId}. Verification failed."
+            });
+
+            return BadRequest("Payroll verification failed");
         }
+    }
 }
-}
+            //catch (Exception ex)
+            //{
+            //    // Log error if verification fails due to an exception
+            //    await _adminRepository.LogAuditTrailAsync(new AuditTrail
+            //    {
+            //        Action = "Verify Payroll Error",
+            //        PerformedBy = "PayrollProcessor", // Get the currently logged-in user
+            //        Timestamp = DateTime.Now,
+            //        Details = $"Error while verifying payroll for PayrollID {payrollId}. Error: {ex.Message}"
+            //    });
+
+            //    return BadRequest(ex.Message);
+            //    ;
+            //}

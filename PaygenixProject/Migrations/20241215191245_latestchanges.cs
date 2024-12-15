@@ -6,11 +6,27 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PaygenixProject.Migrations
 {
     /// <inheritdoc />
-    public partial class latest : Migration
+    public partial class latestchanges : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "AuditTrails",
+                columns: table => new
+                {
+                    AuditID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Action = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PerformedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Details = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AuditTrails", x => x.AuditID);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Benefits",
                 columns: table => new
@@ -47,9 +63,9 @@ namespace PaygenixProject.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Username = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     RoleID = table.Column<int>(type: "int", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LastLogin = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    CreatedDate = table.Column<DateTime>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -74,8 +90,8 @@ namespace PaygenixProject.Migrations
                     PhoneNumber = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     Position = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Department = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    HireDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ActiveStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    HireDate = table.Column<DateTime>(type: "date", nullable: false),
                     UserID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -96,7 +112,7 @@ namespace PaygenixProject.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserID = table.Column<int>(type: "int", nullable: false),
                     Token = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Expires = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Expires = table.Column<DateTime>(type: "date", nullable: false),
                     IsRevoked = table.Column<bool>(type: "bit", nullable: false),
                     IsUsed = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -117,9 +133,10 @@ namespace PaygenixProject.Migrations
                 {
                     ReportID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ReportDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ReportDate = table.Column<DateTime>(type: "date", nullable: false),
                     EmployeeID = table.Column<int>(type: "int", nullable: true),
-                    PayrollPeriod = table.Column<DateTime>(type: "datetime2", maxLength: 50, nullable: false),
+                    StartPeriod = table.Column<DateTime>(type: "date", nullable: false),
+                    EndPeriod = table.Column<DateTime>(type: "date", maxLength: 50, nullable: false),
                     ComplianceStatus = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     IssuesFound = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ResolvedStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -144,7 +161,7 @@ namespace PaygenixProject.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     EmployeeID = table.Column<int>(type: "int", nullable: false),
                     BenefitID = table.Column<int>(type: "int", nullable: false),
-                    EnrolledDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    EnrolledDate = table.Column<DateTime>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -170,12 +187,12 @@ namespace PaygenixProject.Migrations
                     LeaveRequestID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     EmployeeID = table.Column<int>(type: "int", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "date", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "date", nullable: false),
                     LeaveType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    RequestDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ApprovalDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    RequestDate = table.Column<DateTime>(type: "date", nullable: false),
+                    ApprovalDate = table.Column<DateTime>(type: "date", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -205,11 +222,10 @@ namespace PaygenixProject.Migrations
                     TDS = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     ESI = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     Deduction = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    TaxAmount = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     NetPay = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    StartPeriod = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndPeriod = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    GeneratedDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    StartPeriod = table.Column<DateTime>(type: "date", nullable: false),
+                    EndPeriod = table.Column<DateTime>(type: "date", nullable: false),
+                    GeneratedDate = table.Column<DateTime>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -268,6 +284,9 @@ namespace PaygenixProject.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AuditTrails");
+
             migrationBuilder.DropTable(
                 name: "ComplianceReports");
 
