@@ -77,7 +77,7 @@ namespace NewPayGenixAPI.Repositories
 
             return false; // Verification failed
         }
-        public async Task<EmployeeDTO> GetEmployeeByPayrollIdAsync(int payrollId)
+        public async Task<(EmployeeDTO, decimal)> GetEmployeeByPayrollIdAsync(int payrollId)
         {
             // Fetch the payroll with associated employee details
             var payroll = await _context.Payrolls
@@ -87,8 +87,8 @@ namespace NewPayGenixAPI.Repositories
             if (payroll == null || payroll.Employee == null)
                 throw new Exception("Payroll or associated employee not found.");
 
-            // Map Employee entity to EmployeeDTO
-            return new EmployeeDTO
+            // Map Employee entity to EmployeeDTO and return NetPay
+            var employeeDto = new EmployeeDTO
             {
                 EmployeeID = payroll.Employee.EmployeeID,
                 FirstName = payroll.Employee.FirstName,
@@ -101,7 +101,10 @@ namespace NewPayGenixAPI.Repositories
                 ActiveStatus = payroll.Employee.ActiveStatus,
                 UserID = payroll.Employee.UserID
             };
+
+            return (employeeDto, payroll.NetPay);
         }
+
         //public async Task VerifyPayrollAsync(int employeeId)
         //{
         //    var payroll = await _context.Payrolls.FirstOrDefaultAsync(p => p.EmployeeID == employeeId);

@@ -68,7 +68,7 @@ namespace NewPayGenixAPI.Controllers
                 if (isVerified)
                 {
                     // Fetch employee details associated with this payroll
-                    var employee = await _payrollProcessorRepository.GetEmployeeByPayrollIdAsync(payrollId);
+                    var (employee, netPay) = await _payrollProcessorRepository.GetEmployeeByPayrollIdAsync(payrollId);
                     if (employee == null)
                     {
                         return BadRequest("Employee associated with payroll not found.");
@@ -81,7 +81,7 @@ namespace NewPayGenixAPI.Controllers
                 Your payroll has been successfully processed.
 
                 Payroll ID: {payrollId}
-                Net Pay: {employee.NetPay:C}
+                Net Pay: {netPay:C}
 
                 Thank you,
                 Payroll Team
