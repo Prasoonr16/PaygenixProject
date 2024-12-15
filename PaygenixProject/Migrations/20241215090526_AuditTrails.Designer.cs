@@ -12,8 +12,8 @@ using NewPayGenixAPI.Data;
 namespace PaygenixProject.Migrations
 {
     [DbContext(typeof(PaygenixDBContext))]
-    [Migration("20241213111310_modifymodels")]
-    partial class modifymodels
+    [Migration("20241215090526_AuditTrails")]
+    partial class AuditTrails
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -87,7 +87,6 @@ namespace PaygenixProject.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("StartPeriod")
-                        .HasMaxLength(50)
                         .HasColumnType("date");
 
                     b.HasKey("ReportID");
@@ -329,6 +328,35 @@ namespace PaygenixProject.Migrations
                     b.HasIndex("RoleID");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("PaygenixProject.Models.AuditTrail", b =>
+                {
+                    b.Property<int>("AuditID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AuditID"));
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Details")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("PerformedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("AuditID");
+
+                    b.ToTable("AuditTrails");
                 });
 
             modelBuilder.Entity("PaygenixProject.Models.RefreshToken", b =>

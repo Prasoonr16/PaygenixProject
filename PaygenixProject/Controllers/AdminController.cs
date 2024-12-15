@@ -7,6 +7,7 @@ using NewPayGenixAPI.DTO;
 using NewPayGenixAPI.Models;
 using NewPayGenixAPI.Repositories;
 using PaygenixProject.DTO;
+using PaygenixProject.Models;
 using PaygenixProject.Repositories;
 
 namespace NewPayGenixAPI.Controllers
@@ -36,20 +37,11 @@ namespace NewPayGenixAPI.Controllers
                 var employees = await _adminRepository.GetAllEmployeesAsync();
                 return Ok(employees);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-        
-
-        //[HttpGet("employee/{id}")]
-        //public async Task<IActionResult> GetEmployeeById(int id)
-        //{
-        //    var employee = await _adminRepository.GetEmployeeByIdAsync(id);
-        //    if (employee == null) return NotFound("Employee not found");
-        //    return Ok(employee);
-        //}
 
         [HttpPut("employee/{id}")]
         public async Task<IActionResult> UpdateEmployee(int id, [FromBody] EmployeeDTO employeeDto)
@@ -57,22 +49,56 @@ namespace NewPayGenixAPI.Controllers
             try
             {
                 var employee = await _adminRepository.GetEmployeeByIdAsync(id);
-                if (employee == null) return NotFound("Employee not found");
+                if (employee == null)
+                {
+                    // Log employee not found
+                    await _adminRepository.LogAuditTrailAsync(new AuditTrail
+                    {
+                        Action = "Employee Update Failed",
+                        PerformedBy = "Admin", // Use the current user's name or ID
+                        Timestamp = DateTime.Now,
+                        Details = $"Employee with ID {id} not found.",
+                    });
+                    return NotFound("Employee not found");
+                }
 
-                //employee.FirstName = employeeDto.FirstName;
-                //employee.LastName = employeeDto.LastName;
-                //employee.Email = employeeDto.Email;
-                //employee.PhoneNumber = employeeDto.PhoneNumber;
+                // Log before updating employee details
+                await _adminRepository.LogAuditTrailAsync(new AuditTrail
+                {
+                    Action = "Employee Update Attempt",
+                    PerformedBy = "Admin",
+                    Timestamp = DateTime.Now,
+                    Details = $"Employee ID {id} update Attempt"
+                });
+
                 employee.Position = employeeDto.Position;
                 employee.Department = employeeDto.Department;
                 employee.HireDate = employeeDto.HireDate.Date;
-                employee.ActiveStatus= employeeDto.ActiveStatus;
+                employee.ActiveStatus = employeeDto.ActiveStatus;
 
                 await _adminRepository.UpdateEmployeeAsync(employee);
+
+                // Log successful update
+                await _adminRepository.LogAuditTrailAsync(new AuditTrail
+                {
+                    Action = "Employee Updated Successfully",
+                    PerformedBy = "Admin",
+                    Timestamp = DateTime.Now,
+                    Details = $"Employee {id} updated successfully. Position: {employeeDto.Position}, Department: {employeeDto.Department}"
+                });
+
                 return Ok("Employee updated successfully!");
             }
             catch (Exception ex)
             {
+                // Log exception
+                await _adminRepository.LogAuditTrailAsync(new AuditTrail
+                {
+                    Action = "Employee Update Error",
+                    PerformedBy = "Admin",
+                    Timestamp = DateTime.Now,
+                    Details = $"Error updating employee {id}: {ex.Message}"            
+                });
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
@@ -82,11 +108,38 @@ namespace NewPayGenixAPI.Controllers
         {
             try
             {
+                // Log the deletion attempt
+                await _adminRepository.LogAuditTrailAsync(new AuditTrail
+                {
+                    Action = "Employee Deletion Attempt",
+                    PerformedBy = "Admin",  // You can use the currently logged-in user
+                    Timestamp = DateTime.Now,
+                    Details = $"Attempting to delete employee with ID {id}"
+                });
                 await _adminRepository.DeleteEmployeeAsync(id);
+
+                // Log the successful deletion
+                await _adminRepository.LogAuditTrailAsync(new AuditTrail
+                {
+                    Action = "Employee Deleted Successfully",
+                    PerformedBy = "Admin",
+                    Timestamp = DateTime.Now,
+                    Details = $"Employee with ID {id} deleted successfully.",
+      
+                });
+
                 return Ok("Employee deleted successfully!");
             }
             catch (Exception ex)
             {
+                // Log employee not found error
+                await _adminRepository.LogAuditTrailAsync(new AuditTrail
+                {
+                    Action = "Employee Deletion Error",
+                    PerformedBy = "Admin",
+                    Timestamp = DateTime.Now,
+                    Details = $"Error deleting employee with ID {id}: {ex.Message}"
+                });
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
@@ -110,6 +163,15 @@ namespace NewPayGenixAPI.Controllers
         {
             try
             {
+                // Log the user creation attempt
+                await _adminRepository.LogAuditTrailAsync(new AuditTrail
+                {
+                    Action = "Add User Attempt",
+                    PerformedBy = "Admin",  // Get the currently logged-in user
+                    Timestamp = DateTime.Now,
+                    Details = $"Attempting to create user with username {userDto.Username}"
+                });
+
                 // Create a new User entity from the UserDTO
                 var user = new User
                 {
@@ -122,6 +184,15 @@ namespace NewPayGenixAPI.Controllers
 
                 // Add the user via the repository
                 await _adminRepository.AddUserAsync(user);
+
+                // Log successful user creation
+                await _adminRepository.LogAuditTrailAsync(new AuditTrail
+                {
+                    Action = "User Created Successfully",
+                    PerformedBy = "Admin",
+                    Timestamp = DateTime.Now,
+                    Details = $"User with username {userDto.Username} created successfully with UserID {user.UserID}"
+                });
                 var emailBody = $@"
                 Hello {userDto.Username},
                 
@@ -144,6 +215,14 @@ namespace NewPayGenixAPI.Controllers
             }
             catch (Exception ex)
             {
+                // Log error
+                await _adminRepository.LogAuditTrailAsync(new AuditTrail
+                {
+                    Action = "Add User Error",
+                    PerformedBy = "Admin",
+                    Timestamp = DateTime.Now,
+                    Details = $"Error adding user with username {userDto.Username}: {ex.Message}"
+                });
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
@@ -154,8 +233,29 @@ namespace NewPayGenixAPI.Controllers
         {
             try
             {
+                // Log the attempt to update the user
+                await _adminRepository.LogAuditTrailAsync(new AuditTrail
+                {
+                    Action = "Update User Attempt",
+                    PerformedBy = "Admin",  // Get the currently logged-in user
+                    Timestamp = DateTime.Now,
+                    Details = $"Attempting to update user with UserID {id} and username {userDTO.Username}"
+                 
+                });
+
                 var user = await _adminRepository.GetUserByIdAsync(id);
-                if (user == null) return NotFound("Employee not found");
+                if (user == null)
+                {
+                    // Log failed attempt due to user not found
+                    await _adminRepository.LogAuditTrailAsync(new AuditTrail
+                    {
+                        Action = "Update User Failed",
+                        PerformedBy = "Admin",
+                        Timestamp = DateTime.Now,
+                        Details = $"User with UserID {id} not found"
+                    });
+                    return NotFound("Employee not found");
+                }
 
                 user.UserID = userDTO.UserID;
                 user.Username = userDTO.Username;
@@ -164,10 +264,29 @@ namespace NewPayGenixAPI.Controllers
 
 
                 await _adminRepository.UpdateUserAsync(user);
+
+                // Log successful update
+                await _adminRepository.LogAuditTrailAsync(new AuditTrail
+                {
+                    Action = "User Updated Successfully",
+                    PerformedBy = "Admin",
+                    Timestamp = DateTime.Now,
+                    Details = $"User with UserID {user.UserID} and username {user.Username} updated successfully"                  
+                });
+
+
                 return Ok("User updated successfully!");
             }
             catch (Exception ex)
             {
+                // Log any exception
+                await _adminRepository.LogAuditTrailAsync(new AuditTrail
+                {
+                    Action = "Update User Error",
+                    PerformedBy = "Admin",
+                    Timestamp = DateTime.Now,
+                    Details = $"Error updating user with UserID {id}: {ex.Message}"
+                });
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
@@ -189,11 +308,29 @@ namespace NewPayGenixAPI.Controllers
         [HttpPost("add-payroll")]
         public async Task<IActionResult> AddPayroll([FromBody] PayrollDTO payrollDto)
         {
-            try {
+            try
+            {
+                // Log the attempt to add payroll
+                await _adminRepository.LogAuditTrailAsync(new AuditTrail
+                {
+                    Action = "Add Payroll Attempt",
+                    PerformedBy = "Admin", // Get the currently logged-in user
+                    Timestamp = DateTime.Now,
+                    Details = $"Attempting to add payroll for EmployeeID {payrollDto.EmployeeID}"
+                    
+                });
                 // Validate the employee
                 var employee = await _adminRepository.GetEmployeeByIdAsync(payrollDto.EmployeeID);
                 if (employee == null)
                 {
+                    // Log failed attempt due to employee not found
+                    await _adminRepository.LogAuditTrailAsync(new AuditTrail
+                    {
+                        Action = "Add Payroll Failed",
+                        PerformedBy = "Admin",
+                        Timestamp = DateTime.Now,
+                        Details = $"Employee with EmployeeID {payrollDto.EmployeeID} not found."
+                    });
                     return NotFound("Employee not found.");
                 }
 
@@ -242,7 +379,7 @@ namespace NewPayGenixAPI.Controllers
                     //Deduction = payrollDto.Deduction,
                     Deduction = totalDeductions,
                     //TaxAmount = payrollDto.TaxAmount,
-                    
+
                     //NetPay = payrollDto.NetPay,
                     NetPay = netPay,
                     StartPeriod = payrollDto.StartPeriod,
@@ -251,11 +388,28 @@ namespace NewPayGenixAPI.Controllers
                 };
 
                 await _adminRepository.AddPayrollAsync(payroll);
-                
+
+                // Log successful payroll addition
+                await _adminRepository.LogAuditTrailAsync(new AuditTrail
+                {
+                    Action = "Add Payroll Success",
+                    PerformedBy = "Admin",
+                    Timestamp = DateTime.Now,
+                    Details = $"Payroll for EmployeeID {payrollDto.EmployeeID} added successfully"
+                });
+
                 return CreatedAtAction(nameof(AddPayroll), new { id = payroll.PayrollID }, payroll);
             }
             catch (Exception ex)
             {
+                // Log any error that occurs
+                await _adminRepository.LogAuditTrailAsync(new AuditTrail
+                {
+                    Action = "Add Payroll Error",
+                    PerformedBy = "Admin",
+                    Timestamp = DateTime.Now,
+                    Details = $"Error adding payroll for EmployeeID {payrollDto.EmployeeID}: {ex.Message}"
+                });
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
@@ -310,8 +464,25 @@ namespace NewPayGenixAPI.Controllers
         [HttpPut("compliance-reports/{employeeId}")]
         public async Task<IActionResult> UpdateComplianceReport(int employeeId, [FromBody] ComplianceReportDTO updateDTO)
         {
+            // Log the start of the update process
+            await _adminRepository.LogAuditTrailAsync(new AuditTrail
+            {
+                Action = "Update Compliance Report Attempt",
+                PerformedBy = "Admin", // Get the currently logged-in user
+                Timestamp = DateTime.Now,
+                Details = $"Attempting to update compliance report for EmployeeID {employeeId}. New ComplianceStatus: {updateDTO.ComplianceStatus}"
+            });
+
             if (!ModelState.IsValid)
             {
+                // Log validation failure
+                await _adminRepository.LogAuditTrailAsync(new AuditTrail
+                {
+                    Action = "Update Compliance Report Validation Failed",
+                    PerformedBy = "Admin",
+                    Timestamp = DateTime.Now,
+                    Details = $"Validation failed for EmployeeID {employeeId}. Invalid data provided."
+                });
                 return BadRequest(ModelState); // Return 400 if input is invalid
             }
 
@@ -320,46 +491,102 @@ namespace NewPayGenixAPI.Controllers
                 var isUpdated = await _adminRepository.UpdateComplianceReportAsync(employeeId, updateDTO);
                 if (!isUpdated)
                 {
+                    // Log failure to find the report
+                    await _adminRepository.LogAuditTrailAsync(new AuditTrail
+                    {
+                        Action = "Update Compliance Report Failed",
+                        PerformedBy = "Admin",
+                        Timestamp = DateTime.Now,
+                        Details = $"Compliance report for EmployeeID {employeeId} not found."
+                    });
                     return NotFound($"Compliance report for EmployeeID {employeeId} not found.");
                 }
 
+                // Log successful update
+                await _adminRepository.LogAuditTrailAsync(new AuditTrail
+                {
+                    Action = "Update Compliance Report Success",
+                    PerformedBy = "Admin",
+                    Timestamp = DateTime.Now,
+                    Details = $"Compliance report for EmployeeID {employeeId} updated successfully. New ComplianceStatus: {updateDTO.ComplianceStatus}."
+                });
                 return Ok($"Compliance report for EmployeeID {employeeId} updated successfully.");
+            }
+            catch (Exception ex)
+            {
+                // Log any exception that occurs
+                await _adminRepository.LogAuditTrailAsync(new AuditTrail
+                {
+                    Action = "Update Compliance Report Error",
+                    PerformedBy = "Admin",
+                    Timestamp = DateTime.Now,
+                    Details = $"Error updating compliance report for EmployeeID {employeeId}: {ex.Message}"
+                });
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+
+
+
+        
+
+        //---------------------------------------------------------------//
+
+        // View all audit logs
+        [HttpGet("get-audit-trails")]
+        public async Task<IActionResult> GetAllAuditTrails()
+        {
+            try
+            {
+                var auditTrails = await _adminRepository.GetAllAuditTrailsAsync();
+                return Ok(auditTrails);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-        
 
+        // Search audit logs
+        [HttpGet("search-audit-trails")]
+        public async Task<IActionResult> SearchAuditTrails([FromQuery] string searchTerm, [FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate)
+        {
+            try
+            {
+                var auditTrails = await _adminRepository.SearchAuditTrailsAsync(searchTerm, startDate, endDate);
 
+                if(auditTrails == null){
+                    return NotFound("Logs not found.");
+                }
+                return Ok(auditTrails);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
+        // Log a new audit trail
+        [HttpPost("log-audit-trails")]
+        public async Task<IActionResult> LogAuditTrail([FromBody] AuditTrail auditTrail)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Invalid data.");
+                }
 
-        //[HttpGet("logs")]
-        //public IActionResult GetLogs([FromQuery] string? date)
-        //{
-        //    //Determine log file path
-        //    var logDirectory = Path.Combine(_webHostEnvironment.ContentRootPath, "Logs");
-        //    string logFileName = string.IsNullOrWhiteSpace(date)
-        //        ? "api-log.txt" //Default to the current log file
-        //        : $"api-log-{date}"; //Log file for a specific date
-
-        //    var logFilePath = Path.Combine(logDirectory, logFileName);
-
-        //    //Check if the log file exists
-        //    if(!System.IO.File.Exists(logFilePath))
-        //    {
-        //        return NotFound($"Log file not found for the specified date: {date}");
-        //    }
-
-        //    var logContent = System.IO.File.ReadAllText(logFilePath);
-
-        //    return Ok(new
-        //    {
-        //        FileName = logFileName,
-        //        Content = logContent
-        //    });
-        //}
+                await _adminRepository.LogAuditTrailAsync(auditTrail);
+                return Ok("Audit trail logged successfully.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 }
 

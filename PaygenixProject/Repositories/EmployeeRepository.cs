@@ -77,11 +77,36 @@ namespace NewPayGenixAPI.Repositories
                 .Where(p => p.EmployeeID == employeeId)
                 .ToListAsync();
         }
-        
+
         public async Task<List<LeaveRequest>> GetLeaveRequestsByEmployeeIdAsync(int employeeId)
         {
             try
             {
+                return await _context.LeaveRequests
+                    .Where(lr => lr.EmployeeID == employeeId)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error fetching leave requests: {ex.Message}");
+            }
+        }
+
+        public async Task<List<LeaveRequest>> GetLeaveRequestsByUserIdAsync(int userId)
+        {
+            try
+            {
+
+                // Fetch EmployeeID from the Employee table where Employee.UserID matches the given UserID
+                var employeeId = await _context.Employees
+                    .Where(e => e.UserID == userId)
+                    .Select(e => e.EmployeeID)
+                    .FirstOrDefaultAsync();
+
+                if (employeeId == 0)
+                    throw new Exception("Employee not found for the given UserID.");
+
+
                 return await _context.LeaveRequests
                     .Where(lr => lr.EmployeeID == employeeId)
                     .ToListAsync();

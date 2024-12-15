@@ -16,13 +16,15 @@ namespace PaygenixProject.Tests
     public class ManagerControllerTests
     {
         private Mock<IManagerRepository> _managerRepositoryMock;
+        private Mock<IAdminRepository> _adminRepositoryMock;
         private ManagerController _managerController;
 
         [SetUp]
         public void SetUp()
         {
             _managerRepositoryMock = new Mock<IManagerRepository>();
-            _managerController = new ManagerController(_managerRepositoryMock.Object);
+            _adminRepositoryMock = new Mock<IAdminRepository>();
+            _managerController = new ManagerController(_managerRepositoryMock.Object, _adminRepositoryMock.Object);
         }
 
         [Test]
