@@ -1,5 +1,6 @@
 ﻿using NewPayGenixAPI.DTO;
 using NewPayGenixAPI.Models;
+using PaygenixProject.Models;
 
 namespace NewPayGenixAPI.Repositories
 {
@@ -23,6 +24,11 @@ namespace NewPayGenixAPI.Repositories
         Task<IEnumerable<ComplianceReport>> GetAllComplianceReportAsync();
 
         Task<bool> UpdateComplianceReportAsync(int employeeId, ComplianceReportDTO updateDTO);
+
+        //------------------------------------------------------------//
+        Task<IEnumerable<AuditTrail>> GetAllAuditTrailsAsync();
+        Task<IEnumerable<AuditTrail>> SearchAuditTrailsAsync(string searchTerm, DateTime? startDate, DateTime? endDate);
+        Task LogAuditTrailAsync(AuditTrail auditTrail);
 
 
     }

@@ -76,5 +76,7 @@ namespace NewPayGenixAPI.Data
         public DbSet<ComplianceReport> ComplianceReports { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
 
+        public DbSet<AuditTrail> AuditTrails { get; set; }
+
     }
 }

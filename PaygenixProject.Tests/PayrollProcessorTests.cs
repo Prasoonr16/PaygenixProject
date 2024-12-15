@@ -14,13 +14,15 @@ namespace PaygenixProject.Tests
     public class PayrollProcessorControllerTests
     {
         private Mock<IPayrollProcessorRepository> _payrollProcessorRepositoryMock;
+        private Mock<IAdminRepository> _adminRepositoryMock;
         private PayrollProcessorController _payrollProcessorController;
 
         [SetUp]
         public void SetUp()
         {
             _payrollProcessorRepositoryMock = new Mock<IPayrollProcessorRepository>();
-            _payrollProcessorController = new PayrollProcessorController(_payrollProcessorRepositoryMock.Object);
+           _adminRepositoryMock = new Mock<IAdminRepository>();
+            _payrollProcessorController = new PayrollProcessorController(_payrollProcessorRepositoryMock.Object,_adminRepositoryMock.Object);
         }
 
         [Test]

@@ -15,13 +15,15 @@ namespace PaygenixProject.Tests
     public class EmployeeControllerTests
     {
         private Mock<IEmployeeRepository> _employeeRepositoryMock;
+        private Mock<IAdminRepository> _adminRepositoryMock;
         private EmployeeController _employeeController;
 
         [SetUp]
         public void SetUp()
         {
             _employeeRepositoryMock = new Mock<IEmployeeRepository>();
-            _employeeController = new EmployeeController(_employeeRepositoryMock.Object);
+            _adminRepositoryMock = new Mock<IAdminRepository>();
+            _employeeController = new EmployeeController(_employeeRepositoryMock.Object,_adminRepositoryMock.Object);
         }
 
         [Test]

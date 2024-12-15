@@ -17,9 +17,9 @@ namespace NewPayGenixAPI.Repositories
        
 
 
-        public async Task<Payroll> GetPayrollByEmployeeIdAsync(int employeeId)
+        public async Task<IEnumerable<Payroll>> GetPayrollByEmployeeIdAsync(int employeeId)
             {
-                return await _context.Payrolls.FirstOrDefaultAsync(p => p.EmployeeID == employeeId);
+                return await _context.Payrolls.Where(p => p.EmployeeID == employeeId).ToListAsync();
             }
 
         public async Task<Payroll> ProcessPayrollAsync(int employeeId, PayrollDTO payrollDto)
@@ -51,7 +51,7 @@ namespace NewPayGenixAPI.Repositories
                 NetPay = netPay,
                 StartPeriod = payrollDto.StartPeriod,
                 EndPeriod = payrollDto.EndPeriod,
-                GeneratedDate = DateTime.UtcNow
+                GeneratedDate = DateTime.Now
             };
 
             // Save to the database

@@ -42,7 +42,7 @@ namespace NewPayGenixAPI.Repositories
             if (leaveRequest == null) throw new Exception("Leave request not found");
 
             leaveRequest.Status = status;
-            leaveRequest.ApprovalDate = DateTime.UtcNow; // Set approval date when status is updated
+            leaveRequest.ApprovalDate = DateTime.Now; // Set approval date when status is updated
             _context.LeaveRequests.Update(leaveRequest);
             await _context.SaveChangesAsync();
         }

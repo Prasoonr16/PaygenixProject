@@ -5,6 +5,7 @@ using NewPayGenixAPI.DTO;
 using NewPayGenixAPI.Models;
 using NewPayGenixAPI.Repositories;
 using NUnit.Framework;
+using PaygenixProject.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -15,13 +16,15 @@ namespace PaygenixProject.Tests
     public class AdminControllerTests
     {
         private Mock<IAdminRepository> _adminRepositoryMock;
+        private Mock<EmailService> _emailServiceMock;
         private AdminController _adminController;
 
         [SetUp]
         public void SetUp()
         {
             _adminRepositoryMock = new Mock<IAdminRepository>();
-            _adminController = new AdminController(_adminRepositoryMock.Object);
+            _emailServiceMock = new Mock<EmailService>();
+            _adminController = new AdminController(_adminRepositoryMock.Object, _emailServiceMock.Object);
         }
 
         [Test]

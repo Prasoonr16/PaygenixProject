@@ -1,4 +1,5 @@
-﻿namespace NewPayGenixAPI.DTO
+﻿
+namespace NewPayGenixAPI.DTO
 {
     public class PayrollDTO
     {

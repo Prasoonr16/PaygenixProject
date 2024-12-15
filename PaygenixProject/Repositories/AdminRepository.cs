@@ -2,6 +2,7 @@
 using NewPayGenixAPI.Data;
 using NewPayGenixAPI.DTO;
 using NewPayGenixAPI.Models;
+using PaygenixProject.Models;
 
 namespace NewPayGenixAPI.Repositories
 {
@@ -130,16 +131,51 @@ namespace NewPayGenixAPI.Repositories
             }
 
             // Update the fields based on the DTO
-            report.ReportDate = DateTime.UtcNow;
+            report.ReportDate = DateTime.Now;
             report.ComplianceStatus = updateDTO.ComplianceStatus;
             report.ResolvedStatus = updateDTO.ResolvedStatus;
-          
+
 
             // Save changes to the database
             _context.ComplianceReports.Update(report);
             await _context.SaveChangesAsync();
 
             return true; // Update successful
+        }
+
+        //--------------------------------------------------------------------//
+
+        public async Task<IEnumerable<AuditTrail>> GetAllAuditTrailsAsync()
+        {
+            return await _context.AuditTrails.OrderByDescending(a => a.Timestamp).ToListAsync();
+        }
+
+        public async Task<IEnumerable<AuditTrail>> SearchAuditTrailsAsync(string searchTerm, DateTime? startDate, DateTime? endDate)
+        {
+            var query = _context.AuditTrails.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                query = query.Where(a => a.Action.Contains(searchTerm) || a.PerformedBy.Contains(searchTerm));
+            }
+
+            if (startDate.HasValue)
+            {
+                query = query.Where(a => a.Timestamp >= startDate.Value);
+            }
+
+            if (endDate.HasValue)
+            {
+                query = query.Where(a => a.Timestamp <= endDate.Value);
+            }
+
+            return await query.OrderByDescending(a => a.Timestamp).ToListAsync();
+        }
+
+        public async Task LogAuditTrailAsync(AuditTrail auditTrail)
+        {
+            await _context.AuditTrails.AddAsync(auditTrail);
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using NewPayGenixAPI.Data;
 using NewPayGenixAPI.DTO;
 using NewPayGenixAPI.Models;
+using NewPayGenixAPI.Repositories;
 using PaygenixProject.DTO;
 using PaygenixProject.Models;
 
@@ -23,13 +24,15 @@ namespace NewPayGenixAPI.Controllers
     {
         private readonly PaygenixDBContext _context;
         private readonly IConfiguration _configuration;
+        private readonly IAdminRepository _adminRepository;
 
         // Logger instance
         private static readonly ILog _logger = LogManager.GetLogger(typeof(UserController));
-        public UserController(PaygenixDBContext context, IConfiguration configuration)
+        public UserController(PaygenixDBContext context, IConfiguration configuration, IAdminRepository adminRepository)
         {
             _context = context;
             _configuration = configuration;
+            _adminRepository = adminRepository;
         }
 
         [HttpPost("register")]
@@ -112,11 +115,20 @@ namespace NewPayGenixAPI.Controllers
                         .Include(u => u.Role)
                         .FirstOrDefaultAsync(u => u.Username == loginDto.Username && u.RoleID == loginDto.RoleID);
 
-                    if (user == null || !VerifyPassword(loginDto.Password, user.PasswordHash))
+                if (user == null || !VerifyPassword(loginDto.Password, user.PasswordHash))
+                {
+                    _logger.Warn($"Login failed for username: {loginDto.Username}");
+
+                    // Log failed login
+                    await _adminRepository.LogAuditTrailAsync(new AuditTrail
                     {
-                        _logger.Warn($"Login failed for username: {loginDto.Username}");
-                        return Unauthorized("Invalid username or password.");
-                    }
+                        Action = "Login Failed",
+                        PerformedBy = loginDto.Username,
+                        Timestamp = DateTime.Now,
+                        Details = "Invalid credentials",
+                    });
+                    return Unauthorized("Invalid username or password.");
+                }
 
                     // Generate JWT Token
                     var token = GenerateAccessToken(user);
@@ -131,8 +143,16 @@ namespace NewPayGenixAPI.Controllers
 
                     _logger.Info($"Login successful for username: {loginDto.Username}, Role: {user.Role.RoleName}");
 
+                // Log successful login
+                await _adminRepository.LogAuditTrailAsync(new AuditTrail
+                {
+                    Action = "Login Successful",
+                    PerformedBy = user.Username,
+                    Timestamp = DateTime.Now,
+                    Details = "Login successfull"
+                }); 
 
-                    return Ok(new
+                return Ok(new
                     {
                         Token = token,
                         refreshToken = refreshToken.Token,
@@ -249,11 +269,33 @@ namespace NewPayGenixAPI.Controllers
             {
                 // Step 1: Verify if the user exists using UserID
                 var user = await _context.Users.FirstOrDefaultAsync(u => u.UserID == resetPasswordDto.UserID);
-                if (user == null) return NotFound("User not found");
+
+
+                if (user == null) 
+                {
+                    await _adminRepository.LogAuditTrailAsync(new AuditTrail
+                    {
+                        Action = "Reset Password Failed",
+                        PerformedBy = "User ID : "+resetPasswordDto.UserID.ToString(),
+                        Timestamp = DateTime.Now,
+                        Details = "User not found",
+                    });
+                    return NotFound("User not found");
+                }
+
+                _logger.Info($"Reset Password attempt for username: {user.Username}");
 
                 // Step 2: Verify the existing password
                 if (user.PasswordHash != resetPasswordDto.ExistingPassword)
                 {
+                    await _adminRepository.LogAuditTrailAsync(new AuditTrail
+                    {
+                        Action = "Reset Password Failed",
+                        PerformedBy = "User ID : " + resetPasswordDto.UserID.ToString(),
+                        Timestamp = DateTime.Now,
+                        Details = "Incorrect existing password",
+                    });
+                    _logger.Warn($"Reset Password failed for username: {user.Username}");
                     return BadRequest("Existing password is incorrect.");
                 }
 
@@ -262,10 +304,26 @@ namespace NewPayGenixAPI.Controllers
                 _context.Users.Update(user);
                 await _context.SaveChangesAsync();
 
+                await _adminRepository.LogAuditTrailAsync(new AuditTrail
+                {
+                    Action = "Reset Password Successful",
+                    PerformedBy = "User ID : "+resetPasswordDto.UserID.ToString(),
+                    Timestamp = DateTime.Now,
+                    Details = "Password reset successfully",
+                });
+
                 return Ok("Password has been reset successfully!");
             }
             catch (Exception ex)
             {
+                await _adminRepository.LogAuditTrailAsync(new AuditTrail
+                {
+                    Action = "Reset Password Error",
+                    PerformedBy = "User ID : "+resetPasswordDto.UserID.ToString(),
+                    Timestamp = DateTime.Now,
+                    Details = $"Exception: {ex.Message}",
+                });
+                _logger.Error($"An error occurred during password reset: {ex.Message}");
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
@@ -293,61 +351,6 @@ namespace NewPayGenixAPI.Controllers
                 throw new InvalidOperationException("Error generating the refresh token.", ex);
             }
         }
-
-        //[HttpPost("logout")]
-        //[Authorize] // Ensure only authenticated users can log out
-        //public async Task<IActionResult> Logout([FromBody] LogoutDTO logoutDto)
-        //{
-        //    try
-        //    {
-        //        // Get the current user from the claims
-        //        var userId = int.Parse(User.FindFirst("UserID")?.Value);
-
-        //        _logger.Info($"Logout attempt for UserID: {userId}");
-
-        //        // If a specific refresh token is provided, revoke it
-        //        if (!string.IsNullOrEmpty(logoutDto.RefreshToken))
-        //        {
-        //            var token = await _context.RefreshTokens
-        //                .FirstOrDefaultAsync(rt => rt.Token == logoutDto.RefreshToken && rt.UserID == userId);
-
-        //            if (token == null)
-        //            {
-        //                _logger.Warn($"Invalid refresh token for UserID: {userId}");
-        //                return BadRequest("Invalid refresh token.");
-        //            }
-
-        //            // Revoke the token
-        //            token.IsRevoked = true;
-        //            _context.RefreshTokens.Update(token);
-        //            await _context.SaveChangesAsync();
-
-        //            _logger.Info($"Logout successful for UserID: {userId} (specific token revoked)");
-        //            return Ok("Logged out successfully.");
-        //        }
-
-        //        // Revoke all refresh tokens for the user (optional)
-        //        var allTokens = await _context.RefreshTokens
-        //            .Where(rt => rt.UserID == userId && !rt.IsRevoked && !rt.IsUsed)
-        //            .ToListAsync();
-
-        //        foreach (var refreshToken in allTokens)
-        //        {
-        //            refreshToken.IsRevoked = true;
-        //        }
-
-        //        _context.RefreshTokens.UpdateRange(allTokens);
-        //        await _context.SaveChangesAsync();
-
-        //        _logger.Info($"Logout successful for UserID: {userId} (all tokens revoked)");
-        //        return Ok("Logged out successfully from all devices.");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.Error($"An error occurred during logout: {ex.Message}");
-        //        return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred.");
-        //    }
-        //}
 
         // Helper Method to Verify Password 
         private bool VerifyPassword(string inputPassword, string storedPasswordHash)

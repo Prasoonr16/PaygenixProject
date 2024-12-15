@@ -5,8 +5,8 @@ namespace NewPayGenixAPI.Repositories
 {
     public interface IPayrollProcessorRepository
     {
-       
-        Task<Payroll> GetPayrollByEmployeeIdAsync(int employeeId);
+
+        Task<IEnumerable<Payroll>> GetPayrollByEmployeeIdAsync(int employeeId);
         //Task VerifyPayrollAsync(int employeeId);
         Task<Payroll> ProcessPayrollAsync(int employeeId, PayrollDTO payrollDto);
         Task<bool> VerifyPayrollAsync(int payrollId);
