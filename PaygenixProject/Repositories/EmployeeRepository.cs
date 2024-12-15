@@ -17,20 +17,18 @@ namespace NewPayGenixAPI.Repositories
         {
             return await _context.Employees.FirstOrDefaultAsync(e => e.EmployeeID == employeeId);
         }
-
+        public async Task AddEmployeeAsync(Employee employee)
+        {
+            await _context.Employees.AddAsync(employee);
+            await _context.SaveChangesAsync();
+        }
 
         public async Task UpdateEmployeePersonalInfoAsync(Employee employee)
         {
-            var existingEmployee = await _context.Employees.FindAsync(employee.EmployeeID);
-            if (existingEmployee == null) throw new Exception("Employee not found");
+            //var existingEmployee = await _context.Employees.FindAsync(employee.EmployeeID);
+            //if (existingEmployee == null) throw new Exception("Employee not found");
 
-            existingEmployee.FirstName = employee.FirstName;
-            existingEmployee.LastName = employee.LastName;
-            existingEmployee.Email = employee.Email;
-            existingEmployee.PhoneNumber = employee.PhoneNumber;
-            existingEmployee.UserID = employee.UserID;
-
-            _context.Employees.Update(existingEmployee);
+            _context.Employees.Update(employee);
             await _context.SaveChangesAsync();
         }
 

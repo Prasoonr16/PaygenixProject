@@ -57,7 +57,7 @@ builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnC
 builder.Services.AddAuthorization();
 
 builder.Services.AddDbContext<PaygenixDBContext>(db => db.UseSqlServer(builder.Configuration.GetConnectionString("Constr")));
-builder.Services.AddSingleton<EmailService>();
+builder.Services.AddScoped<EmailService>();
 
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
