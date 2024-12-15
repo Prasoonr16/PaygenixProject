@@ -77,6 +77,31 @@ namespace NewPayGenixAPI.Repositories
 
             return false; // Verification failed
         }
+        public async Task<EmployeeDTO> GetEmployeeByPayrollIdAsync(int payrollId)
+        {
+            // Fetch the payroll with associated employee details
+            var payroll = await _context.Payrolls
+                .Include(p => p.Employee) // Include the Employee navigation property
+                .FirstOrDefaultAsync(p => p.PayrollID == payrollId);
+
+            if (payroll == null || payroll.Employee == null)
+                throw new Exception("Payroll or associated employee not found.");
+
+            // Map Employee entity to EmployeeDTO
+            return new EmployeeDTO
+            {
+                EmployeeID = payroll.Employee.EmployeeID,
+                FirstName = payroll.Employee.FirstName,
+                LastName = payroll.Employee.LastName,
+                Email = payroll.Employee.Email,
+                PhoneNumber = payroll.Employee.PhoneNumber,
+                Position = payroll.Employee.Position,
+                Department = payroll.Employee.Department,
+                HireDate = payroll.Employee.HireDate,
+                ActiveStatus = payroll.Employee.ActiveStatus,
+                UserID = payroll.Employee.UserID
+            };
+        }
         //public async Task VerifyPayrollAsync(int employeeId)
         //{
         //    var payroll = await _context.Payrolls.FirstOrDefaultAsync(p => p.EmployeeID == employeeId);

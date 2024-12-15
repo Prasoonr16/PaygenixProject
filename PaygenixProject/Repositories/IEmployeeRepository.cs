@@ -1,4 +1,5 @@
-﻿using NewPayGenixAPI.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using NewPayGenixAPI.Models;
 
 namespace NewPayGenixAPI.Repositories
 {
@@ -9,7 +10,7 @@ namespace NewPayGenixAPI.Repositories
         Task<IEnumerable<Payroll>> GetPayStubsAsync(int employeeId);
         //Task SubmitTimesheetAsync(TimeSheet timesheet);
         Task RequestLeaveAsync(LeaveRequest leaveRequest);
-
+        Task AddEmployeeAsync(Employee employee);
         Task GenerateComplianceReportAsync(ComplianceReport report);
 
         //--------------------------------------------//

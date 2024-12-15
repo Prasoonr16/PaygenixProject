@@ -45,18 +45,34 @@ namespace NewPayGenixAPI.Controllers
         {
             try
             {
-                var employee = new Employee
-                {
-                    EmployeeID = id,
-                    FirstName = employeeDto.FirstName,
-                    LastName = employeeDto.LastName,
-                    Email = employeeDto.Email,
-                    PhoneNumber = employeeDto.PhoneNumber,
-                    UserID = employeeDto.UserID
-                };
+                var existingEmployee = await _employeeRepository.GetEmployeeDetailsAsync(id);
 
-                await _employeeRepository.UpdateEmployeePersonalInfoAsync(employee);
-                return Ok("Employee details updated successfully");
+                if (existingEmployee == null)
+                {
+                    var employee = new Employee
+                    {
+                        EmployeeID = employeeDto.EmployeeID,
+                        FirstName = employeeDto.FirstName,
+                        LastName = employeeDto.LastName,
+                        Email = employeeDto.Email,
+                        PhoneNumber = employeeDto.PhoneNumber,
+                        UserID = employeeDto.UserID
+                        
+                    };
+                    await _employeeRepository.AddEmployeeAsync(employee);
+                    return Ok("Employee added successfully.");
+                }
+                else
+                {
+                    existingEmployee.FirstName = employeeDto.FirstName;
+                    existingEmployee.LastName = employeeDto.LastName;
+                    existingEmployee.Email = employeeDto.Email;
+                    existingEmployee.PhoneNumber = employeeDto.PhoneNumber;
+                    existingEmployee.UserID = employeeDto.UserID;
+
+                    await _employeeRepository.UpdateEmployeePersonalInfoAsync(existingEmployee);
+                    return Ok("Employee details updated successfully");
+                }
             }
             catch (Exception ex)
             {
