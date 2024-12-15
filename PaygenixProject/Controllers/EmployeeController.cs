@@ -56,17 +56,6 @@ namespace NewPayGenixAPI.Controllers
             });
             try
             {   
-                var employee = new Employee
-                {
-                    EmployeeID = id,
-                    FirstName = employeeDto.FirstName,
-                    LastName = employeeDto.LastName,
-                    Email = employeeDto.Email,
-                    PhoneNumber = employeeDto.PhoneNumber,
-                    UserID = employeeDto.UserID
-                };
-
-                await _employeeRepository.UpdateEmployeePersonalInfoAsync(employee);
 
                 // Log success
                 await _adminRepository.LogAuditTrailAsync(new AuditTrail
