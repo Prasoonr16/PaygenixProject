@@ -5,6 +5,7 @@ using NewPayGenixAPI.DTO;
 using NewPayGenixAPI.Models;
 using NewPayGenixAPI.Repositories;
 using NUnit.Framework;
+using PaygenixProject.Repositories;
 using System;
 using System.Threading.Tasks;
 
@@ -21,7 +22,7 @@ namespace PaygenixProject.Tests
         public void SetUp()
         {
             _payrollProcessorRepositoryMock = new Mock<IPayrollProcessorRepository>();
-           _adminRepositoryMock = new Mock<IAdminRepository>();
+            _adminRepositoryMock = new Mock<IAdminRepository>();
             _payrollProcessorController = new PayrollProcessorController(_payrollProcessorRepositoryMock.Object,_adminRepositoryMock.Object);
         }
 

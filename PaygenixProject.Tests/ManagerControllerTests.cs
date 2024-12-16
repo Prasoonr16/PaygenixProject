@@ -23,8 +23,7 @@ namespace PaygenixProject.Tests
         public void SetUp()
         {
             _managerRepositoryMock = new Mock<IManagerRepository>();
-            _adminRepositoryMock = new Mock<IAdminRepository>();
-            _managerController = new ManagerController(_managerRepositoryMock.Object, _adminRepositoryMock.Object);
+            _managerController = new ManagerController(_managerRepositoryMock.Object);
         }
 
         [Test]
