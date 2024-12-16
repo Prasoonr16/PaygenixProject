@@ -13,7 +13,7 @@ namespace NewPayGenixAPI.Controllers
     {
         private readonly IManagerRepository _managerRepository;
 
-        public ManagerController(IManagerRepository managerRepository, IAdminRepository @object)
+        public ManagerController(IManagerRepository managerRepository)
         {
             _managerRepository = managerRepository;
         }
