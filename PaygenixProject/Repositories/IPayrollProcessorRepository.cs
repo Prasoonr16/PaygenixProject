@@ -13,6 +13,7 @@ namespace NewPayGenixAPI.Repositories
         Task<bool> VerifyPayrollAsync(int payrollId);
         Task<PayrollDTO> ProcessPayrollByIdAsync(int payrollId);
         Task<(EmployeeDTO, decimal)> GetEmployeeByPayrollIdAsync(int payrollId);
+        //void ProcessPayrollAsync(int employeeId, PayrollDTO payrollDto);
         //Task<List<Payroll>> ProcessPayrollsAsync(DateTime startPeriod, DateTime endPeriod);
     }
 }

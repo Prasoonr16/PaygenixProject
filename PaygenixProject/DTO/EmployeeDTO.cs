@@ -12,6 +12,7 @@
         public DateTime HireDate { get; set; }
         public string ActiveStatus { get; set; }
 
+        public int? ManagerUserID { get; set; }
         public int? UserID { get; set; } 
 
     }

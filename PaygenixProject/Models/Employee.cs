@@ -37,7 +37,9 @@ namespace NewPayGenixAPI.Models
 
         
         public int? UserID { get; set; }  // Foreign Key to User 
+        public int? ManagerUserID { get; set; }
 
+        public User Manager { get; set; }
         //[ForeignKey("UserID")]
 
         //Navigation Property

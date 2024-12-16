@@ -80,5 +80,35 @@ namespace NewPayGenixAPI.Controllers
             }
         }
 
+        
+        //API for getting the payroll and leave request
+        [HttpGet("payrolls")]
+        public async Task<IActionResult> GetPayrollsByManager([FromQuery] int managerUserId)
+        {
+            try
+            {
+                var payrolls = await _managerRepository.GetPayrollsByManagerAsync(managerUserId);
+                return Ok(payrolls);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+        [HttpGet("leave-requests")]
+        public async Task<IActionResult> GetLeaveRequestsByManager([FromQuery] int managerUserId)
+        {
+            try
+            {
+                var leaveRequests = await _managerRepository.GetLeaveRequestsByManagerAsync(managerUserId);
+                return Ok(leaveRequests);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
     }
 }

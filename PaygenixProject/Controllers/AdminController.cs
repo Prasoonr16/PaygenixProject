@@ -75,7 +75,8 @@ namespace NewPayGenixAPI.Controllers
                 employee.Department = employeeDto.Department;
                 employee.HireDate = employeeDto.HireDate.Date;
                 employee.ActiveStatus = employeeDto.ActiveStatus;
-
+                employee.ManagerUserID = employeeDto.UserID;
+                
                 await _adminRepository.UpdateEmployeeAsync(employee);
 
                 // Log successful update
@@ -527,66 +528,67 @@ namespace NewPayGenixAPI.Controllers
         }
 
 
-
-
-
         
+
+
+
 
         //---------------------------------------------------------------//
 
         // View all audit logs
-        //[HttpGet("get-audit-trails")]
-        //public async Task<IActionResult> GetAllAuditTrails()
-        //{
-        //    try
-        //    {
-        //        var auditTrails = await _adminRepository.GetAllAuditTrailsAsync();
-        //        return Ok(auditTrails);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"Internal server error: {ex.Message}");
-        //    }
-        //}
+        [HttpGet("get-audit-trails")]
+        public async Task<IActionResult> GetAllAuditTrails()
+        {
+            try
+            {
+                var auditTrails = await _adminRepository.GetAllAuditTrailsAsync();
+                return Ok(auditTrails);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
         //// Search audit logs
-        //[HttpGet("search-audit-trails")]
-        //public async Task<IActionResult> SearchAuditTrails([FromQuery] string searchTerm, [FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate)
-        //{
-        //    try
-        //    {
-        //        var auditTrails = await _adminRepository.SearchAuditTrailsAsync(searchTerm, startDate, endDate);
+        [HttpGet("search-audit-trails")]
+        public async Task<IActionResult> SearchAuditTrails([FromQuery] string searchTerm, [FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate)
+        {
+            try
+            {
+                var auditTrails = await _adminRepository.SearchAuditTrailsAsync(searchTerm, startDate, endDate);
 
-        //        if(auditTrails == null){
-        //            return NotFound("Logs not found.");
-        //        }
-        //        return Ok(auditTrails);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"Internal server error: {ex.Message}");
-        //    }
-        //}
+                if (auditTrails == null)
+                {
+                    return NotFound("Logs not found.");
+                }
+                return Ok(auditTrails);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
         //// Log a new audit trail
-        //[HttpPost("log-audit-trails")]
-        //public async Task<IActionResult> LogAuditTrail([FromBody] AuditTrail auditTrail)
-        //{
-        //    try
-        //    {
-        //        if (!ModelState.IsValid)
-        //        {
-        //            return BadRequest("Invalid data.");
-        //        }
+        [HttpPost("log-audit-trails")]
+        public async Task<IActionResult> LogAuditTrail([FromBody] AuditTrail auditTrail)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Invalid data.");
+                }
 
-        //        await _adminRepository.LogAuditTrailAsync(auditTrail);
-        //        return Ok("Audit trail logged successfully.");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"Internal server error: {ex.Message}");
-        //    }
-        //}
+                await _adminRepository.LogAuditTrailAsync(auditTrail);
+                return Ok("Audit trail logged successfully.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 }
 
