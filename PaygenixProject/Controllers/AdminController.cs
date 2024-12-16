@@ -530,19 +530,6 @@ namespace NewPayGenixAPI.Controllers
             }
         }
 
-
-<<<<<<< HEAD
-        
-=======
-
-
-
-
->>>>>>> f2b14790e622cdba87d50e2b907a1442acc14ca5
-
-
-
-
         //---------------------------------------------------------------//
 
         // View all audit logs
@@ -560,11 +547,6 @@ namespace NewPayGenixAPI.Controllers
             }
         }
 
-<<<<<<< HEAD
-        //// Search audit logs
-=======
-        // Search audit logs
->>>>>>> f2b14790e622cdba87d50e2b907a1442acc14ca5
         [HttpGet("search-audit-trails")]
         public async Task<IActionResult> SearchAuditTrails([FromQuery] string searchTerm, [FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate)
         {
@@ -584,11 +566,6 @@ namespace NewPayGenixAPI.Controllers
             }
         }
 
-<<<<<<< HEAD
-        //// Log a new audit trail
-=======
-        // Log a new audit trail
->>>>>>> f2b14790e622cdba87d50e2b907a1442acc14ca5
         [HttpPost("log-audit-trails")]
         public async Task<IActionResult> LogAuditTrail([FromBody] AuditTrail auditTrail)
         {
@@ -607,9 +584,6 @@ namespace NewPayGenixAPI.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-<<<<<<< HEAD
-=======
-
 
         [HttpGet("rowcount/{tableName}")]
         public IActionResult GetRowCount(string tableName)
@@ -632,7 +606,6 @@ namespace NewPayGenixAPI.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
->>>>>>> f2b14790e622cdba87d50e2b907a1442acc14ca5
     }
 }
 
