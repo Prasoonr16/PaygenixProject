@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NewPayGenixAPI.Data;
 using NewPayGenixAPI.DTO;
 using NewPayGenixAPI.Models;
 using NewPayGenixAPI.Repositories;
@@ -19,13 +20,15 @@ namespace NewPayGenixAPI.Controllers
     {
         private readonly IAdminRepository _adminRepository;
         private readonly EmailService _emailService;
+        private readonly PaygenixDBContext _context;
 
         //private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public AdminController(IAdminRepository adminRepository, EmailService emailService)
+        public AdminController(IAdminRepository adminRepository, EmailService emailService, PaygenixDBContext context)
         {
             _adminRepository = adminRepository;
             _emailService = emailService;
+            _context = context;
         }
 
         // Manage Employee Information
@@ -582,6 +585,29 @@ namespace NewPayGenixAPI.Controllers
 
                 await _adminRepository.LogAuditTrailAsync(auditTrail);
                 return Ok("Audit trail logged successfully.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+        [HttpGet("rowcount/{tableName}")]
+        public IActionResult GetRowCount(string tableName)
+        {
+            try
+            {
+                // Use Reflection to access DbSet<T>
+                var table = _context.GetType().GetProperty(tableName)?.GetValue(_context);
+
+                if (table == null)
+                    return BadRequest($"Table '{tableName}' does not exist.");
+
+                // Use LINQ to count rows dynamically
+                var rowCount = ((IQueryable<object>)table).Count();
+
+                return Ok(rowCount);
             }
             catch (Exception ex)
             {

@@ -40,7 +40,33 @@ namespace NewPayGenixAPI.Controllers
             }
         }
 
+        [HttpPost("add-employee")]
+        public async Task<IActionResult> AddEmployee([FromBody] EmployeeDTO employeeDto)
+        {
+            try
+            {
+                var employee = new Employee
+                {
+                    FirstName = employeeDto.FirstName,
+                    LastName = employeeDto.LastName,
+                    Email = employeeDto.Email,
+                    PhoneNumber = employeeDto.PhoneNumber,
+                    Position = employeeDto.Position,
+                    Department = employeeDto.Department,
+                    ActiveStatus = employeeDto.ActiveStatus,
+                    HireDate = employeeDto.HireDate,
+                    UserID = employeeDto.UserID,
+                };
+                await _employeeRepository.AddEmployeeAsync(employee);
 
+                return CreatedAtAction(nameof(AddEmployee), new { id = employee.EmployeeID }, employee);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+
+            }
+        }
 
         // Update Personal Information
         [HttpPut("{id}/update-info")]
@@ -66,7 +92,7 @@ namespace NewPayGenixAPI.Controllers
                     Details = $"Personal information updated successfully for EmployeeID {id}. Updated Email: {employeeDto.Email}, Phone: {employeeDto.PhoneNumber}"
                 });
                
-                return Ok("Employee details updated successfully");
+                //return Ok("Employee details updated successfully");
                 var existingEmployee = await _employeeRepository.GetEmployeeDetailsAsync(id);
 
                 if (existingEmployee == null)
