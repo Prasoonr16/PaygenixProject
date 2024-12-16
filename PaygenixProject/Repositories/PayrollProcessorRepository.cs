@@ -22,44 +22,121 @@ namespace NewPayGenixAPI.Repositories
                 return await _context.Payrolls.Where(p => p.EmployeeID == employeeId).ToListAsync();
             }
 
-        public async Task<Payroll> ProcessPayrollAsync(int employeeId, PayrollDTO payrollDto)
-        {
-            // Find the employee
-            var employee = await _context.Employees.FindAsync(employeeId);
-            if (employee == null) throw new Exception("Employee not found");
+        //public async Task<Payroll> ProcessPayrollAsync(int employeeId, PayrollDTO payrollDto)
+        //{
+        //    // Find the employee
+        //    var employee = await _context.Employees.FindAsync(employeeId);
+        //    if (employee == null) throw new Exception("Employee not found");
 
-            // Calculate payroll details
-            var grossPay = payrollDto.BasicSalary + payrollDto.HRA + payrollDto.LTA + payrollDto.TravellingAllowance;
+        //    // Calculate payroll details
+        //    var grossPay = payrollDto.BasicSalary + payrollDto.HRA + payrollDto.LTA + payrollDto.TravellingAllowance;
+        //    var esi = 0.075m * grossPay;
+        //    var totalDeductions = payrollDto.PF + payrollDto.TDS + esi;
+        //    var netPay = grossPay - totalDeductions;
+
+        //    // Create a new payroll entry
+        //    var payroll = new Payroll
+        //    {
+        //        EmployeeID = employeeId,
+        //        BasicSalary = payrollDto.BasicSalary,
+        //        HRA = payrollDto.HRA,
+        //        LTA = payrollDto.LTA,
+        //        TravellingAllowance = payrollDto.TravellingAllowance,
+        //        DA = payrollDto.DA,
+        //        GrossPay = grossPay,
+        //        PF = payrollDto.PF,
+        //        TDS = payrollDto.TDS,
+        //        ESI = esi,
+        //        Deduction = totalDeductions,
+        //        NetPay = netPay,
+        //        StartPeriod = payrollDto.StartPeriod,
+        //        EndPeriod = payrollDto.EndPeriod,
+        //        GeneratedDate = DateTime.Now
+        //    };
+
+        //    // Save to the database
+        //    _context.Payrolls.Update(payroll);
+        //    await _context.SaveChangesAsync();
+
+        //    return payroll;
+        //}
+        public async Task<List<PayrollDTO>> FetchPayrollsByPeriodAsync(DateTime startPeriod, DateTime endPeriod)
+        {
+            // Fetch payrolls within the specified date range
+            var payrolls = await _context.Payrolls
+                .Where(p => p.StartPeriod >= startPeriod && p.EndPeriod <= endPeriod)
+                .Include(p => p.Employee) // Include Employee navigation property
+                .ToListAsync();
+
+            // Map payrolls to PayrollDTO
+            return payrolls.Select(p => new PayrollDTO
+            {
+                PayrollID = p.PayrollID,
+                EmployeeID = p.EmployeeID,
+                BasicSalary = p.BasicSalary,
+                HRA = p.HRA,
+                LTA = p.LTA,
+                TravellingAllowance = p.TravellingAllowance,
+                DA = p.DA,
+                GrossPay = p.GrossPay,
+                PF = p.PF,
+                TDS = p.TDS,
+                ESI = p.ESI,
+                Deduction = p.Deduction,
+                NetPay = p.NetPay,
+                StartPeriod = p.StartPeriod,
+                EndPeriod = p.EndPeriod,
+                GeneratedDate = p.GeneratedDate
+            }).ToList();
+        }
+
+        public async Task<PayrollDTO> ProcessPayrollByIdAsync(int payrollId)
+        {
+            // Fetch the payroll entry
+            var payroll = await _context.Payrolls
+                .Include(p => p.Employee) // Include Employee details
+                .FirstOrDefaultAsync(p => p.PayrollID == payrollId);
+
+            if (payroll == null)
+                throw new Exception($"Payroll with ID {payrollId} not found.");
+
+            // Business logic to process the payroll
+            var grossPay = payroll.BasicSalary + payroll.HRA + payroll.LTA + payroll.TravellingAllowance;
             var esi = 0.075m * grossPay;
-            var totalDeductions = payrollDto.PF + payrollDto.TDS + esi;
+            var totalDeductions = payroll.PF + payroll.TDS + esi;
             var netPay = grossPay - totalDeductions;
 
-            // Create a new payroll entry
-            var payroll = new Payroll
-            {
-                EmployeeID = employeeId,
-                BasicSalary = payrollDto.BasicSalary,
-                HRA = payrollDto.HRA,
-                LTA = payrollDto.LTA,
-                TravellingAllowance = payrollDto.TravellingAllowance,
-                DA = payrollDto.DA,
-                GrossPay = grossPay,
-                PF = payrollDto.PF,
-                TDS = payrollDto.TDS,
-                ESI = esi,
-                Deduction = totalDeductions,
-                NetPay = netPay,
-                StartPeriod = payrollDto.StartPeriod,
-                EndPeriod = payrollDto.EndPeriod,
-                GeneratedDate = DateTime.Now
-            };
+            payroll.GrossPay = grossPay;
+            payroll.ESI = esi;
+            payroll.Deduction = totalDeductions;
+            payroll.NetPay = netPay;
+            payroll.GeneratedDate = DateTime.Now;
 
-            // Save to the database
+            // Save the updated payroll
             _context.Payrolls.Update(payroll);
             await _context.SaveChangesAsync();
-
-            return payroll;
+            return new PayrollDTO
+            {
+                PayrollID = payroll.PayrollID,
+                EmployeeID = payroll.EmployeeID,
+                BasicSalary = payroll.BasicSalary,
+                HRA = payroll.HRA,
+                LTA = payroll.LTA,
+                TravellingAllowance = payroll.TravellingAllowance,
+                DA = payroll.DA,
+                GrossPay = payroll.GrossPay,
+                PF = payroll.PF,
+                TDS = payroll.TDS,
+                ESI = payroll.ESI,
+                Deduction = payroll.Deduction,
+                NetPay = payroll.NetPay,
+                StartPeriod = payroll.StartPeriod,
+                EndPeriod = payroll.EndPeriod,
+                GeneratedDate = payroll.GeneratedDate
+            };
         }
+
+
         public async Task<bool> VerifyPayrollAsync(int payrollId)
         {
             // Find the payroll entry

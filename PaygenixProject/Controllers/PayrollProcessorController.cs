@@ -18,6 +18,10 @@ namespace NewPayGenixAPI.Controllers
         private readonly IAdminRepository _adminRepository;
         private readonly EmailService _emailService;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 7489921d5c7fc405e54074e155dc8752b8490c65
         public PayrollProcessorController(IPayrollProcessorRepository payrollProcessorRepository, IAdminRepository adminRepository, EmailService emailService)
         {
             _payrollProcessorRepository = payrollProcessorRepository;
@@ -26,7 +30,6 @@ namespace NewPayGenixAPI.Controllers
         }
 
         [HttpGet("pay-roll/{employeeID}")]
-
         public async Task<IActionResult> GetPayrollByEmployeeID(int employeeID)
         {
             try
@@ -40,64 +43,66 @@ namespace NewPayGenixAPI.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-        [HttpPost("process/{employeeId}")]
-        public async Task<IActionResult> ProcessPayroll(int employeeId, [FromBody] PayrollDTO payrollDto)
-        {
-            // Log the attempt to process payroll
-            await _adminRepository.LogAuditTrailAsync(new AuditTrail
-            {
-                Action = "Process Payroll Attempt",
-                PerformedBy = "PayrollProcessor", // Get the currently logged-in user
-                Timestamp = DateTime.Now,
-                Details = $"Attempting to process payroll for EmployeeID {employeeId}."
-            });
+        //[HttpPost("process/{employeeId}")]
+        //public async Task<IActionResult> ProcessPayroll(int employeeId, [FromBody] PayrollDTO payrollDto)
+        //{
+        //    // Log the attempt to process payroll
+        //    await _adminRepository.LogAuditTrailAsync(new AuditTrail
+        //    {
+        //        Action = "Process Payroll Attempt",
+        //        PerformedBy = "PayrollProcessor", // Get the currently logged-in user
+        //        Timestamp = DateTime.Now,
+        //        Details = $"Attempting to process payroll for EmployeeID {employeeId}."
+        //    });
 
-            if (!ModelState.IsValid)
-            {
-                // Log validation failure
-                await _adminRepository.LogAuditTrailAsync(new AuditTrail
-                {
-                    Action = "Process Payroll Validation Failed",
-                    PerformedBy = "PayrollProcessor",
-                    Timestamp = DateTime.Now,
-                    Details = $"Payroll processing for EmployeeID {employeeId} failed validation. Invalid data."
-                });
+        //    if (!ModelState.IsValid)
+        //    {
+        //        // Log validation failure
+        //        await _adminRepository.LogAuditTrailAsync(new AuditTrail
+        //        {
+        //            Action = "Process Payroll Validation Failed",
+        //            PerformedBy = "PayrollProcessor",
+        //            Timestamp = DateTime.Now,
+        //            Details = $"Payroll processing for EmployeeID {employeeId} failed validation. Invalid data."
+        //        });
 
-                return BadRequest(ModelState);
-            }
+        //        return BadRequest(ModelState);
+        //    }
 
-            try
-            {
-                var payroll = await _payrollProcessorRepository.ProcessPayrollAsync(employeeId, payrollDto);
+        //    try
+        //    {
+        //        var payroll = await _payrollProcessorRepository.ProcessPayrollAsync(employeeId, payrollDto);
 
-                // Log successful payroll processing
-                await _adminRepository.LogAuditTrailAsync(new AuditTrail
-                {
-                    Action = "Process Payroll Success",
-                    PerformedBy = "PayrollProcessor", // Get the currently logged-in user
-                    Timestamp = DateTime.Now,
-                    Details = $"Payroll processed successfully for EmployeeID {employeeId}. PayrollID: {payroll.PayrollID}. Gross Pay: {payroll.GrossPay}, Net Pay: {payroll.NetPay}."
-                });
+        //        // Log successful payroll processing
+        //        await _adminRepository.LogAuditTrailAsync(new AuditTrail
+        //        {
+        //            Action = "Process Payroll Success",
+        //            PerformedBy = "PayrollProcessor", // Get the currently logged-in user
+        //            Timestamp = DateTime.Now,
+        //            Details = $"Payroll processed successfully for EmployeeID {employeeId}. PayrollID: {payroll.PayrollID}. Gross Pay: {payroll.GrossPay}, Net Pay: {payroll.NetPay}."
+        //        });
 
-                //return CreatedAtAction(nameof(ProcessPayroll), new { id = payroll.PayrollID }, payroll);
+        //        //return CreatedAtAction(nameof(ProcessPayroll), new { id = payroll.PayrollID }, payroll);
 
-                return Ok("Payroll processed successfully.");
+        //        return Ok("Payroll processed successfully.");
 
-            }
-            catch (Exception ex)
-            {
-                // Log the exception/error if the processing fails
-                await _adminRepository.LogAuditTrailAsync(new AuditTrail
-                {
-                    Action = "Process Payroll Error",
-                    PerformedBy = "PayrollProcessor", // Get the currently logged-in user
-                    Timestamp = DateTime.Now,
-                    Details = $"Error processing payroll for EmployeeID {employeeId}. Error: {ex.Message}"
-                });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Log the exception/error if the processing fails
+        //        await _adminRepository.LogAuditTrailAsync(new AuditTrail
+        //        {
+        //            Action = "Process Payroll Error",
+        //            PerformedBy = "PayrollProcessor", // Get the currently logged-in user
+        //            Timestamp = DateTime.Now,
+        //            Details = $"Error processing payroll for EmployeeID {employeeId}. Error: {ex.Message}"
+        //        });
 
-                return BadRequest(ex.Message);
-            }
-        }
+        //        return BadRequest(ex.Message);
+        //    }
+        //}
+
+
         //[HttpPost("verify/{payrollId}")]
         //public async Task<IActionResult> VerifyPayroll(int payrollId)
         //{
@@ -116,6 +121,52 @@ namespace NewPayGenixAPI.Controllers
         //        return BadRequest(ex.Message);
         //    }
         //}
+        [HttpGet("payrolls-by-period")]
+        public async Task<IActionResult> FetchPayrollsByPeriod([FromQuery] DateTime startPeriod, [FromQuery] DateTime endPeriod)
+        {
+            try
+            {
+                // Validate the date range
+                if (startPeriod >= endPeriod)
+                    return BadRequest("Invalid date range. StartPeriod must be earlier than EndPeriod.");
+
+                // Fetch payrolls
+                var payrolls = await _payrollProcessorRepository.FetchPayrollsByPeriodAsync(startPeriod, endPeriod);
+
+                if (!payrolls.Any())
+                    return NotFound($"No payrolls found for the period {startPeriod:yyyy-MM-dd} to {endPeriod:yyyy-MM-dd}.");
+
+                return Ok(payrolls);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error fetching payrolls: {ex.Message}");
+            }
+        }
+        [HttpPost("process/{payrollId}")]
+        public async Task<IActionResult> ProcessPayroll(int payrollId)
+        {
+            try
+            {
+                // Process the payroll
+                var processedPayroll = await _payrollProcessorRepository.ProcessPayrollByIdAsync(payrollId);
+
+                if (processedPayroll == null)
+                    return NotFound($"Payroll with ID {payrollId} not found.");
+
+                return Ok(new
+                {
+                    Message = "Payroll processed successfully.",
+                    Payroll = processedPayroll
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error processing payroll: {ex.Message}");
+            }
+        }
+
+
         [HttpPost("verify/{payrollId}")]
         public async Task<IActionResult> VerifyPayroll(int payrollId)
         {
