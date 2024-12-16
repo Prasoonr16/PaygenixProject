@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NewPayGenixAPI.Data;
 using NewPayGenixAPI.DTO;
 using NewPayGenixAPI.Models;
 using NewPayGenixAPI.Repositories;
@@ -19,13 +20,15 @@ namespace NewPayGenixAPI.Controllers
     {
         private readonly IAdminRepository _adminRepository;
         private readonly EmailService _emailService;
+        private readonly PaygenixDBContext _context;
 
         //private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public AdminController(IAdminRepository adminRepository, EmailService emailService)
+        public AdminController(IAdminRepository adminRepository, EmailService emailService, PaygenixDBContext context)
         {
             _adminRepository = adminRepository;
             _emailService = emailService;
+            _context = context;
         }
 
         // Manage Employee Information
@@ -528,7 +531,14 @@ namespace NewPayGenixAPI.Controllers
         }
 
 
+<<<<<<< HEAD
         
+=======
+
+
+
+
+>>>>>>> f2b14790e622cdba87d50e2b907a1442acc14ca5
 
 
 
@@ -550,7 +560,11 @@ namespace NewPayGenixAPI.Controllers
             }
         }
 
+<<<<<<< HEAD
         //// Search audit logs
+=======
+        // Search audit logs
+>>>>>>> f2b14790e622cdba87d50e2b907a1442acc14ca5
         [HttpGet("search-audit-trails")]
         public async Task<IActionResult> SearchAuditTrails([FromQuery] string searchTerm, [FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate)
         {
@@ -570,7 +584,11 @@ namespace NewPayGenixAPI.Controllers
             }
         }
 
+<<<<<<< HEAD
         //// Log a new audit trail
+=======
+        // Log a new audit trail
+>>>>>>> f2b14790e622cdba87d50e2b907a1442acc14ca5
         [HttpPost("log-audit-trails")]
         public async Task<IActionResult> LogAuditTrail([FromBody] AuditTrail auditTrail)
         {
@@ -589,6 +607,32 @@ namespace NewPayGenixAPI.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+<<<<<<< HEAD
+=======
+
+
+        [HttpGet("rowcount/{tableName}")]
+        public IActionResult GetRowCount(string tableName)
+        {
+            try
+            {
+                // Use Reflection to access DbSet<T>
+                var table = _context.GetType().GetProperty(tableName)?.GetValue(_context);
+
+                if (table == null)
+                    return BadRequest($"Table '{tableName}' does not exist.");
+
+                // Use LINQ to count rows dynamically
+                var rowCount = ((IQueryable<object>)table).Count();
+
+                return Ok(rowCount);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+>>>>>>> f2b14790e622cdba87d50e2b907a1442acc14ca5
     }
 }
 

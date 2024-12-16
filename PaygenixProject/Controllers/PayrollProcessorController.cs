@@ -18,7 +18,6 @@ namespace NewPayGenixAPI.Controllers
         private readonly IAdminRepository _adminRepository;
         private readonly EmailService _emailService;
 
-
         public PayrollProcessorController(IPayrollProcessorRepository payrollProcessorRepository, IAdminRepository adminRepository, EmailService emailService)
         {
             _payrollProcessorRepository = payrollProcessorRepository;
