@@ -8,12 +8,10 @@ namespace NewPayGenixAPI.Repositories
         Task<Employee> GetEmployeeDetailsAsync(int employeeId);
         Task UpdateEmployeePersonalInfoAsync(Employee employee);
         Task<IEnumerable<Payroll>> GetPayStubsAsync(int employeeId);
-        //Task SubmitTimesheetAsync(TimeSheet timesheet);
         Task RequestLeaveAsync(LeaveRequest leaveRequest);
         Task AddEmployeeAsync(Employee employee);
         Task GenerateComplianceReportAsync(ComplianceReport report);
 
-        //--------------------------------------------//
         Task<Employee> GetEmployeeDetailsByUserIDAsync(int userId);
         Task<IEnumerable<Payroll>> GetPayStubsByUserIDAsync(int userId);
 

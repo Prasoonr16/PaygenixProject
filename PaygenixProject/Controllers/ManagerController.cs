@@ -18,6 +18,7 @@ namespace NewPayGenixAPI.Controllers
             _managerRepository = managerRepository;
         }
 
+<<<<<<< HEAD
         // Review Team Payrolls
         //[HttpGet("team-payrolls")]
         //public async Task<IActionResult> GetTeamPayrolls()
@@ -40,6 +41,9 @@ namespace NewPayGenixAPI.Controllers
        //         return StatusCode(500, $"Internal server error: {ex.Message}");
        //     }
        // }
+=======
+            
+>>>>>>> 16cb98c03f946f84f99482e04cdf28055c5970d9
 
         [HttpPut("leave-request/{leaveRequestId}/update-status")]
         public async Task<IActionResult> UpdateLeaveRequestStatus(int leaveRequestId, [FromQuery] string status)
@@ -61,6 +65,7 @@ namespace NewPayGenixAPI.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+<<<<<<< HEAD
         //[HttpGet("leave-requests")]
         //public async Task<IActionResult> GetAllLeaveRequests()
         //{
@@ -79,11 +84,14 @@ namespace NewPayGenixAPI.Controllers
         //        return StatusCode(500, $"Internal server error: {ex.Message}");
         //    }
         //}
+=======
+        
+>>>>>>> 16cb98c03f946f84f99482e04cdf28055c5970d9
 
         
         //API for getting the payroll and leave request
-        [HttpGet("payrolls")]
-        public async Task<IActionResult> GetPayrollsByManager([FromQuery] int managerUserId)
+        [HttpGet("payrolls/{managerUserId}")]
+        public async Task<IActionResult> GetPayrollsByManager(int managerUserId)
         {
             try
             {
@@ -95,8 +103,8 @@ namespace NewPayGenixAPI.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-        [HttpGet("leave-requests")]
-        public async Task<IActionResult> GetLeaveRequestsByManager([FromQuery] int managerUserId)
+        [HttpGet("leave-requests/{managerUserId}")]
+        public async Task<IActionResult> GetLeaveRequestsByManager( int managerUserId)
         {
             try
             {

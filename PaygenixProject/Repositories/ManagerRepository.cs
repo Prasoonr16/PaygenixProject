@@ -21,13 +21,7 @@ namespace NewPayGenixAPI.Repositories
             return await _context.Payrolls.ToListAsync();
         }
 
-        //public async Task<IEnumerable<LeaveRequest>> GetPendingLeaveRequestsAsync(int managerId)
-        //{
-        //    return await _context.LeaveRequests
-        //        .Include(lr => lr.Employee)
-        //        .Where(lr => lr.Employee.ManagerID == managerId && lr.Status == "Pending")
-        //        .ToListAsync();
-        //}
+       
 
         // Get all leave requests for a specific employee
         public async Task<IEnumerable<LeaveRequest>> GetLeaveRequestsByEmployeeIdAsync(int employeeId)
@@ -43,21 +37,11 @@ namespace NewPayGenixAPI.Repositories
             if (leaveRequest == null) throw new Exception("Leave request not found");
 
             leaveRequest.Status = status;
-            leaveRequest.ApprovalDate = DateTime.Now; // Set approval date when status is updated
+            leaveRequest.ApprovalDate = DateTime.Now; 
             _context.LeaveRequests.Update(leaveRequest);
             await _context.SaveChangesAsync();
         }
-        //public async Task ApproveLeaveRequestAsync(int leaveRequestId, bool isApproved)
-        //{
-        //    var emp = await _context.LeaveRequests.FindAsync();
-        //    if (leaveRequest == null) throw new Exception("Leave Request not found");
-
-        //    leaveRequest.Status = isApproved ? "Approved" : "Rejected";
-        //    leaveRequest.ApprovalDate = DateTime.UtcNow;
-
-        //    _context.LeaveRequests.Update(leaveRequest);
-        //    await _context.SaveChangesAsync();
-        //}
+       
         public async Task<List<LeaveRequest>> GetAllLeaveRequestsAsync()
         {
             try
@@ -71,7 +55,6 @@ namespace NewPayGenixAPI.Repositories
         }
 
         
-        //New Methods-----------------------------------------------
         public async Task<List<Employee>> GetEmployeesByManagerAsync(int managerUserId)
         {
             // Verify if the user is a manager

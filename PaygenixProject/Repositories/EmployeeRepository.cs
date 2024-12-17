@@ -37,11 +37,6 @@ namespace NewPayGenixAPI.Repositories
             return await _context.Payrolls.Where(p => p.EmployeeID == employeeId).ToListAsync();
         }
 
-        //public async Task SubmitTimesheetAsync(TimeSheet timesheet)
-        //{
-        //    await _context.TimeSheets.AddAsync(timesheet);
-        //    await _context.SaveChangesAsync();
-        //}
 
         public async Task RequestLeaveAsync(LeaveRequest leaveRequest)
         {

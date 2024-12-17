@@ -45,16 +45,9 @@ namespace NewPayGenixAPI.Data
                 .OnDelete(DeleteBehavior.Restrict);
         }
 
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    var configBuilder = new ConfigurationBuilder()
-        //      .AddJsonFile("appsettings.json")
-        //      .Build();
-        //    var configSection = configBuilder.GetSection("ConnectionStrings");
-        //    var conStr = configSection["ConStr"] ?? null;
-        //    optionsBuilder.UseSqlServer(conStr);
-        //}
+      
 
+<<<<<<< HEAD
         public DbSet<Role> Roles { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Employee> Employees { get; set; }
@@ -62,8 +55,18 @@ namespace NewPayGenixAPI.Data
         public DbSet<LeaveRequest> LeaveRequests { get; set; }
         public DbSet<ComplianceReport> ComplianceReports { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+=======
+            public DbSet<Role> Roles { get; set; }
+            public DbSet<User> Users { get; set; }
+            public DbSet<Employee> Employees { get; set; }
+            public DbSet<Payroll> Payrolls { get; set; }
+            public DbSet<LeaveRequest> LeaveRequests { get; set; }
+            
+            public DbSet<ComplianceReport> ComplianceReports { get; set; }
+            public DbSet<RefreshToken> RefreshTokens { get; set; }
+>>>>>>> 16cb98c03f946f84f99482e04cdf28055c5970d9
 
-        public DbSet<AuditTrail> AuditTrails { get; set; }
+            public DbSet<AuditTrail> AuditTrails { get; set; }
 
-    }
+        }
 }

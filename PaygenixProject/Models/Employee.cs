@@ -39,13 +39,21 @@ namespace NewPayGenixAPI.Models
         public int? UserID { get; set; }  // Foreign Key to User 
         public int? ManagerUserID { get; set; }
 
+        
         public User Manager { get; set; }
+
+       
+
         //[ForeignKey("UserID")]
 
         //Navigation Property
         public User User { get; set; }
         public ICollection<Payroll> Payrolls { get; set; } //one to many relationship
         public ICollection<LeaveRequest> LeaveRequests { get; set; }
+<<<<<<< HEAD
+=======
+       
+>>>>>>> 16cb98c03f946f84f99482e04cdf28055c5970d9
     }
 }
 

@@ -22,44 +22,7 @@ namespace NewPayGenixAPI.Repositories
                 return await _context.Payrolls.Where(p => p.EmployeeID == employeeId).ToListAsync();
             }
 
-        //public async Task<Payroll> ProcessPayrollAsync(int employeeId, PayrollDTO payrollDto)
-        //{
-        //    // Find the employee
-        //    var employee = await _context.Employees.FindAsync(employeeId);
-        //    if (employee == null) throw new Exception("Employee not found");
-
-        //    // Calculate payroll details
-        //    var grossPay = payrollDto.BasicSalary + payrollDto.HRA + payrollDto.LTA + payrollDto.TravellingAllowance;
-        //    var esi = 0.075m * grossPay;
-        //    var totalDeductions = payrollDto.PF + payrollDto.TDS + esi;
-        //    var netPay = grossPay - totalDeductions;
-
-        //    // Create a new payroll entry
-        //    var payroll = new Payroll
-        //    {
-        //        EmployeeID = employeeId,
-        //        BasicSalary = payrollDto.BasicSalary,
-        //        HRA = payrollDto.HRA,
-        //        LTA = payrollDto.LTA,
-        //        TravellingAllowance = payrollDto.TravellingAllowance,
-        //        DA = payrollDto.DA,
-        //        GrossPay = grossPay,
-        //        PF = payrollDto.PF,
-        //        TDS = payrollDto.TDS,
-        //        ESI = esi,
-        //        Deduction = totalDeductions,
-        //        NetPay = netPay,
-        //        StartPeriod = payrollDto.StartPeriod,
-        //        EndPeriod = payrollDto.EndPeriod,
-        //        GeneratedDate = DateTime.Now
-        //    };
-
-        //    // Save to the database
-        //    _context.Payrolls.Update(payroll);
-        //    await _context.SaveChangesAsync();
-
-        //    return payroll;
-        //}
+        
         public async Task<List<PayrollDTO>> FetchPayrollsByPeriodAsync(DateTime startPeriod, DateTime endPeriod)
         {
             // Fetch payrolls within the specified date range
@@ -181,17 +144,6 @@ namespace NewPayGenixAPI.Repositories
 
             return (employeeDto, payroll.NetPay);
         }
-
-        //public async Task VerifyPayrollAsync(int employeeId)
-        //{
-        //    var payroll = await _context.Payrolls.FirstOrDefaultAsync(p => p.EmployeeID == employeeId);
-        //    if (payroll == null) throw new Exception("Payroll not found");
-
-        //    if (payroll.NetPay != payroll.GrossPay - payroll.Deduction)
-        //    {
-        //        throw new Exception("Payroll verification failed. NetPay calculation mismatch.");
-        //    }
-        //}
     }
 }
 

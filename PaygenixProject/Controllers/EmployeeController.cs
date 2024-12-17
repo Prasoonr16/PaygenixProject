@@ -56,6 +56,7 @@ namespace NewPayGenixAPI.Controllers
                     ActiveStatus = employeeDto.ActiveStatus,
                     HireDate = employeeDto.HireDate,
                     UserID = employeeDto.UserID,
+                    ManagerUserID = employeeDto.ManagerUserID,
                 };
                 await _employeeRepository.AddEmployeeAsync(employee);
 
@@ -92,25 +93,13 @@ namespace NewPayGenixAPI.Controllers
                     Details = $"Personal information updated successfully for EmployeeID {id}. Updated Email: {employeeDto.Email}, Phone: {employeeDto.PhoneNumber}"
                 });
                
-                //return Ok("Employee details updated successfully");
+                
                 var existingEmployee = await _employeeRepository.GetEmployeeDetailsAsync(id);
-
-                if (existingEmployee == null)
+                 if(existingEmployee == null)
                 {
-                    var newemployee = new Employee
-                    {
-                        EmployeeID = employeeDto.EmployeeID,
-                        FirstName = employeeDto.FirstName,
-                        LastName = employeeDto.LastName,
-                        Email = employeeDto.Email,
-                        PhoneNumber = employeeDto.PhoneNumber,
-                        UserID = employeeDto.UserID,
-                        ManagerUserID = 0
-
-                    };
-                    await _employeeRepository.AddEmployeeAsync(newemployee);
-                    return Ok("Employee added successfully.");
+                    return NotFound("Employee not found");
                 }
+                
                 else
                 {
                     existingEmployee.FirstName = employeeDto.FirstName;
@@ -118,7 +107,7 @@ namespace NewPayGenixAPI.Controllers
                     existingEmployee.Email = employeeDto.Email;
                     existingEmployee.PhoneNumber = employeeDto.PhoneNumber;
                     existingEmployee.UserID = employeeDto.UserID;
-                    existingEmployee.ManagerUserID = 0;
+                    //existingEmployee.ManagerUserID = 0;
                     
                     await _employeeRepository.UpdateEmployeePersonalInfoAsync(existingEmployee);
                     return Ok("Employee details updated successfully");
@@ -222,8 +211,7 @@ namespace NewPayGenixAPI.Controllers
 
             try
             {
-                //reportDto.ComplianceStatus = "Pending";
-                //reportDto.ResolvedStatus = "Pending";
+                
                 var report = new ComplianceReport
                 {
                     ReportDate = DateTime.UtcNow,
@@ -267,7 +255,6 @@ namespace NewPayGenixAPI.Controllers
             }
         }
 
-        //------------------------------------------------------------//
         // View Personal Details based on User ID
         [HttpGet("userid/{id}")]
         public async Task<IActionResult> GetEmployeeDetailsByUserID(int id)
@@ -320,27 +307,27 @@ namespace NewPayGenixAPI.Controllers
             }
         }
 
-            //View leave Request by userID
+        //View leave Request by userID
 
-            [HttpGet("leave-requests/{userId}")]
-            public async Task<IActionResult> GetLeaveRequestsByUserId(int userId)
+        [HttpGet("leave-requests/{userId}")]
+        public async Task<IActionResult> GetLeaveRequestsByUserId(int userId)
+        {
+            try
             {
-                try
-                {
-                    // Fetch leave requests via repository
-                    var leaveRequests = await _employeeRepository.GetLeaveRequestsByUserIdAsync(userId);
+                // Fetch leave requests via repository
+                var leaveRequests = await _employeeRepository.GetLeaveRequestsByUserIdAsync(userId);
 
-                    if (leaveRequests == null || leaveRequests.Count == 0)
-                    {
-                        return NotFound($"No leave requests found.");
-                    }
-
-                    return Ok(leaveRequests);
-                }
-                catch (Exception ex)
+                if (leaveRequests == null || leaveRequests.Count == 0)
                 {
-                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                    return NotFound($"No leave requests found.");
                 }
+
+                return Ok(leaveRequests);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
     }
+}
