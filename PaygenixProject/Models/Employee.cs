@@ -50,10 +50,6 @@ namespace NewPayGenixAPI.Models
         public User User { get; set; }
         public ICollection<Payroll> Payrolls { get; set; } //one to many relationship
         public ICollection<LeaveRequest> LeaveRequests { get; set; }
-<<<<<<< HEAD
-=======
-       
->>>>>>> 16cb98c03f946f84f99482e04cdf28055c5970d9
     }
 }
 

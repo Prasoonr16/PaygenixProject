@@ -23,9 +23,6 @@ namespace PaygenixProject.Tests
     [TestFixture]
     public class AdminControllerTests
     {
-<<<<<<< HEAD
-        
-=======
         private Mock<IAdminRepository> _adminRepositoryMock;
         private Mock<IEmailService> _emailServiceMock;
         private Mock<PaygenixDBContext> _contextMock;
@@ -443,9 +440,6 @@ namespace PaygenixProject.Tests
             Assert.AreEqual(200, okResult.StatusCode);
             Assert.AreEqual("Audit trail logged successfully.", okResult.Value);
         }
-
-       
->>>>>>> 16cb98c03f946f84f99482e04cdf28055c5970d9
     }
 
 }

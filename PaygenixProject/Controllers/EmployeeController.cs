@@ -221,7 +221,7 @@ namespace NewPayGenixAPI.Controllers
                     ComplianceStatus = "Pending",
                     IssuesFound = reportDto.IssuesFound,
                     ResolvedStatus = "Pending",
-                    Comments = reportDto.Comments
+                    Comments = "Add Comment"
                 };
 
                 await _employeeRepository.GenerateComplianceReportAsync(report);

@@ -6,7 +6,6 @@ namespace NewPayGenixAPI.Data
 {
     public class PaygenixDBContext : DbContext
     {
-
         public PaygenixDBContext(DbContextOptions<PaygenixDBContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -47,26 +46,14 @@ namespace NewPayGenixAPI.Data
 
       
 
-<<<<<<< HEAD
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Payroll> Payrolls { get; set; }
         public DbSet<LeaveRequest> LeaveRequests { get; set; }
         public DbSet<ComplianceReport> ComplianceReports { get; set; }
-        public DbSet<RefreshToken> RefreshTokens { get; set; }
-=======
-            public DbSet<Role> Roles { get; set; }
-            public DbSet<User> Users { get; set; }
-            public DbSet<Employee> Employees { get; set; }
-            public DbSet<Payroll> Payrolls { get; set; }
-            public DbSet<LeaveRequest> LeaveRequests { get; set; }
-            
-            public DbSet<ComplianceReport> ComplianceReports { get; set; }
-            public DbSet<RefreshToken> RefreshTokens { get; set; }
->>>>>>> 16cb98c03f946f84f99482e04cdf28055c5970d9
-
-            public DbSet<AuditTrail> AuditTrails { get; set; }
+        public DbSet<AuditTrail> AuditTrails { get; set; }
 
         }
 }

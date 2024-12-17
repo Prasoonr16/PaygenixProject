@@ -14,9 +14,6 @@ namespace PaygenixProject.Tests
     [TestFixture]
     public class PayrollProcessorControllerTests
     {
-<<<<<<< HEAD
-        
-=======
         private Mock<IPayrollProcessorRepository> _payrollProcessorRepositoryMock;
         private Mock<IAdminRepository> _adminRepositoryMock;
         private Mock<IEmailService> _emailServiceMock;
@@ -239,6 +236,5 @@ namespace PaygenixProject.Tests
         }
 
         #endregion
->>>>>>> 16cb98c03f946f84f99482e04cdf28055c5970d9
     }
 }

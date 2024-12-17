@@ -130,6 +130,7 @@ namespace NewPayGenixAPI.Repositories
                 EmployeeID = lr.EmployeeID,
                 StartDate = lr.StartDate,
                 EndDate = lr.EndDate,
+                LeaveType = lr.LeaveType,
                 Status = lr.Status,
                 RequestDate = lr.RequestDate,
                 ApprovalDate = lr.ApprovalDate

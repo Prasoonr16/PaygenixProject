@@ -18,32 +18,6 @@ namespace NewPayGenixAPI.Controllers
             _managerRepository = managerRepository;
         }
 
-<<<<<<< HEAD
-        // Review Team Payrolls
-        //[HttpGet("team-payrolls")]
-        //public async Task<IActionResult> GetTeamPayrolls()
-        //{
-        //    var payrolls = await _managerRepository.GetTeamPayrollsAsync();
-        //    return Ok(payrolls);
-        //}
-
-       //[HttpGet("employee/{employeeId}/leave-requests")]
-       // public async Task<IActionResult> GetLeaveRequestsByEmployeeId(int employeeId)
-       // {
-       //     try
-       //     {
-       //         var leaveRequests = await _managerRepository.GetLeaveRequestsByEmployeeIdAsync(employeeId);
-       //         if (!leaveRequests.Any()) return NotFound("No leave requests found for this employee.");
-       //         return Ok(leaveRequests);
-       //     }
-       //     catch (Exception ex)
-       //     {
-       //         return StatusCode(500, $"Internal server error: {ex.Message}");
-       //     }
-       // }
-=======
-            
->>>>>>> 16cb98c03f946f84f99482e04cdf28055c5970d9
 
         [HttpPut("leave-request/{leaveRequestId}/update-status")]
         public async Task<IActionResult> UpdateLeaveRequestStatus(int leaveRequestId, [FromQuery] string status)
@@ -65,29 +39,6 @@ namespace NewPayGenixAPI.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-<<<<<<< HEAD
-        //[HttpGet("leave-requests")]
-        //public async Task<IActionResult> GetAllLeaveRequests()
-        //{
-        //    try
-        //    {
-        //        // Fetch all leave requests from the repository
-        //        var leaveRequests = await _managerRepository.GetAllLeaveRequestsAsync();
-
-        //        if (!leaveRequests.Any())
-        //            return NotFound("No leave requests found.");
-
-        //        return Ok(leaveRequests);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"Internal server error: {ex.Message}");
-        //    }
-        //}
-=======
-        
->>>>>>> 16cb98c03f946f84f99482e04cdf28055c5970d9
-
         
         //API for getting the payroll and leave request
         [HttpGet("payrolls/{managerUserId}")]

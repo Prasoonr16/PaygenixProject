@@ -16,9 +16,7 @@ namespace PaygenixProject.Tests
     [TestFixture]
     public class ManagerControllerTests
     {
-<<<<<<< HEAD
         
-=======
         private Mock<IManagerRepository> _managerRepositoryMock;
         private ManagerController _controller;
 
@@ -189,6 +187,5 @@ namespace PaygenixProject.Tests
         }
 
         #endregion
->>>>>>> 16cb98c03f946f84f99482e04cdf28055c5970d9
     }
 }
