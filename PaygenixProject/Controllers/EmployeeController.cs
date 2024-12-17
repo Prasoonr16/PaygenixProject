@@ -104,8 +104,9 @@ namespace NewPayGenixAPI.Controllers
                         LastName = employeeDto.LastName,
                         Email = employeeDto.Email,
                         PhoneNumber = employeeDto.PhoneNumber,
-                        UserID = employeeDto.UserID
-                        
+                        UserID = employeeDto.UserID,
+                        ManagerUserID = 0
+
                     };
                     await _employeeRepository.AddEmployeeAsync(newemployee);
                     return Ok("Employee added successfully.");
@@ -117,7 +118,8 @@ namespace NewPayGenixAPI.Controllers
                     existingEmployee.Email = employeeDto.Email;
                     existingEmployee.PhoneNumber = employeeDto.PhoneNumber;
                     existingEmployee.UserID = employeeDto.UserID;
-
+                    existingEmployee.ManagerUserID = 0;
+                    
                     await _employeeRepository.UpdateEmployeePersonalInfoAsync(existingEmployee);
                     return Ok("Employee details updated successfully");
                 }

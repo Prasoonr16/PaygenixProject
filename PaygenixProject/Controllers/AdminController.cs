@@ -78,7 +78,8 @@ namespace NewPayGenixAPI.Controllers
                 employee.Department = employeeDto.Department;
                 employee.HireDate = employeeDto.HireDate.Date;
                 employee.ActiveStatus = employeeDto.ActiveStatus;
-
+                employee.ManagerUserID = employeeDto.UserID;
+                
                 await _adminRepository.UpdateEmployeeAsync(employee);
 
                 // Log successful update
@@ -529,12 +530,6 @@ namespace NewPayGenixAPI.Controllers
             }
         }
 
-
-
-
-
-
-
         //---------------------------------------------------------------//
 
         // View all audit logs
@@ -552,7 +547,6 @@ namespace NewPayGenixAPI.Controllers
             }
         }
 
-        // Search audit logs
         [HttpGet("search-audit-trails")]
         public async Task<IActionResult> SearchAuditTrails([FromQuery] string searchTerm, [FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate)
         {
@@ -572,7 +566,6 @@ namespace NewPayGenixAPI.Controllers
             }
         }
 
-        // Log a new audit trail
         [HttpPost("log-audit-trails")]
         public async Task<IActionResult> LogAuditTrail([FromBody] AuditTrail auditTrail)
         {
@@ -591,7 +584,6 @@ namespace NewPayGenixAPI.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
 
         [HttpGet("rowcount/{tableName}")]
         public IActionResult GetRowCount(string tableName)
