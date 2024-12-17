@@ -22,32 +22,6 @@ namespace PaygenixProject.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("NewPayGenixAPI.Models.Benefit", b =>
-                {
-                    b.Property<int>("BenefitID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BenefitID"));
-
-                    b.Property<string>("BenefitName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EligibilityCriteria")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("BenefitID");
-
-                    b.ToTable("Benefits");
-                });
-
             modelBuilder.Entity("NewPayGenixAPI.Models.ComplianceReport", b =>
                 {
                     b.Property<int>("ReportID")
@@ -152,32 +126,6 @@ namespace PaygenixProject.Migrations
                         .HasFilter("[UserID] IS NOT NULL");
 
                     b.ToTable("Employees");
-                });
-
-            modelBuilder.Entity("NewPayGenixAPI.Models.EmployeeBenefit", b =>
-                {
-                    b.Property<int>("EmployeeBenefitID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmployeeBenefitID"));
-
-                    b.Property<int>("BenefitID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("EmployeeID")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("EnrolledDate")
-                        .HasColumnType("date");
-
-                    b.HasKey("EmployeeBenefitID");
-
-                    b.HasIndex("BenefitID");
-
-                    b.HasIndex("EmployeeID");
-
-                    b.ToTable("EmployeeBenefits");
                 });
 
             modelBuilder.Entity("NewPayGenixAPI.Models.LeaveRequest", b =>
@@ -417,25 +365,6 @@ namespace PaygenixProject.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("NewPayGenixAPI.Models.EmployeeBenefit", b =>
-                {
-                    b.HasOne("NewPayGenixAPI.Models.Benefit", "Benefit")
-                        .WithMany("EmployeeBenefits")
-                        .HasForeignKey("BenefitID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("NewPayGenixAPI.Models.Employee", "Employee")
-                        .WithMany("EmployeeBenefits")
-                        .HasForeignKey("EmployeeID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Benefit");
-
-                    b.Navigation("Employee");
-                });
-
             modelBuilder.Entity("NewPayGenixAPI.Models.LeaveRequest", b =>
                 {
                     b.HasOne("NewPayGenixAPI.Models.Employee", "Employee")
@@ -480,15 +409,8 @@ namespace PaygenixProject.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("NewPayGenixAPI.Models.Benefit", b =>
-                {
-                    b.Navigation("EmployeeBenefits");
-                });
-
             modelBuilder.Entity("NewPayGenixAPI.Models.Employee", b =>
                 {
-                    b.Navigation("EmployeeBenefits");
-
                     b.Navigation("LeaveRequests");
 
                     b.Navigation("Payrolls");

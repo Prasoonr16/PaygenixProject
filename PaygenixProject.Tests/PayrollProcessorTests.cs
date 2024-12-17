@@ -14,199 +14,227 @@ namespace PaygenixProject.Tests
     [TestFixture]
     public class PayrollProcessorControllerTests
     {
-        //    private Mock<IPayrollProcessorRepository> _payrollProcessorRepositoryMock;
-        //    private Mock<IAdminRepository> _adminRepositoryMock;
-        //    private PayrollProcessorController _payrollProcessorController;
+        private Mock<IPayrollProcessorRepository> _payrollProcessorRepositoryMock;
+        private Mock<IAdminRepository> _adminRepositoryMock;
+        private Mock<IEmailService> _emailServiceMock;
+        private PayrollProcessorController _controller;
 
-<<<<<<< HEAD
-        //[SetUp]
-        //public void SetUp()
-        //{
-        //    _payrollProcessorRepositoryMock = new Mock<IPayrollProcessorRepository>();
-        //   _adminRepositoryMock = new Mock<IAdminRepository>();
-        //    _payrollProcessorController = new PayrollProcessorController(_payrollProcessorRepositoryMock.Object,_adminRepositoryMock.Object);
-        //}
-=======
-        //    [SetUp]
-        //    public void SetUp()
-        //    {
-        //        _payrollProcessorRepositoryMock = new Mock<IPayrollProcessorRepository>();
-        //        _adminRepositoryMock = new Mock<IAdminRepository>();
-        //        _payrollProcessorController = new PayrollProcessorController(_payrollProcessorRepositoryMock.Object,_adminRepositoryMock.Object);
-        //    }
->>>>>>> f2b14790e622cdba87d50e2b907a1442acc14ca5
-
-        //    [Test]
-        //    public async Task ProcessPayroll_ValidData_ReturnsCreatedAtActionResult()
-        //    {
-        //        // Arrange
-        //        var employeeId = 1;
-        //        var payrollDto = new PayrollDTO
-        //        {
-        //            BasicSalary = 50000,
-        //            HRA = 10000,
-        //            LTA = 5000,
-        //            TravellingAllowance = 2000,
-        //            DA = 3000,
-        //            GrossPay = 70000,
-        //            PF = 5000,
-        //            TDS = 2000,
-        //            ESI = 1000,
-        //            Deduction = 8000,
-        //            NetPay = 62000,
-        //            StartPeriod = DateTime.UtcNow.AddMonths(-1),
-        //            EndPeriod = DateTime.UtcNow
-        //        };
-
-        //        var payroll = new Payroll
-        //        {
-        //            PayrollID = 101,
-        //            EmployeeID = employeeId,
-        //            BasicSalary = payrollDto.BasicSalary,
-        //            NetPay = payrollDto.NetPay,
-        //            StartPeriod = payrollDto.StartPeriod,
-        //            EndPeriod = payrollDto.EndPeriod
-        //        };
-
-<<<<<<< HEAD
-            //_payrollProcessorRepositoryMock
-            //    .Setup(repo => repo.ProcessPayrollAsync(employeeId, payrollDto))
-            //    .ReturnsAsync(payroll);
-
-            // Act
-            //var result = await _payrollProcessorController.ProcessPayroll(employeeId, payrollDto);
-
-            //// Assert
-            //Assert.That(result, Is.InstanceOf<CreatedAtActionResult>());
-            //var createdResult = result as CreatedAtActionResult;
-            //Assert.That(createdResult?.Value, Is.EqualTo(payroll));
+        [SetUp]
+        public void SetUp()
+        {
+            _payrollProcessorRepositoryMock = new Mock<IPayrollProcessorRepository>();
+            _adminRepositoryMock = new Mock<IAdminRepository>();
+            _emailServiceMock = new Mock<IEmailService>();
+            _controller = new PayrollProcessorController(_payrollProcessorRepositoryMock.Object, _adminRepositoryMock.Object, _emailServiceMock.Object);
         }
-=======
-        //        _payrollProcessorRepositoryMock
-        //            .Setup(repo => repo.ProcessPayrollAsync(employeeId, payrollDto))
-        //            .ReturnsAsync(payroll);
 
-        //        // Act
-        //        var result = await _payrollProcessorController.ProcessPayroll(employeeId, payrollDto);
+        #region GetPayrollByEmployeeID
 
-        //        // Assert
-        //        Assert.That(result, Is.InstanceOf<CreatedAtActionResult>());
-        //        var createdResult = result as CreatedAtActionResult;
-        //        Assert.That(createdResult?.Value, Is.EqualTo(payroll));
-        //    }
->>>>>>> f2b14790e622cdba87d50e2b907a1442acc14ca5
-
-        //    [Test]
-        //    public async Task ProcessPayroll_InvalidModelState_ReturnsBadRequest()
-        //    {
-        //        // Arrange
-        //        _payrollProcessorController.ModelState.AddModelError("BasicSalary", "Required");
-
-<<<<<<< HEAD
-            // Act
-            //var result = await _payrollProcessorController.ProcessPayroll(1, new PayrollDTO());
-
-            //// Assert
-            //Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
-        }
-=======
-        //        // Act
-        //        var result = await _payrollProcessorController.ProcessPayroll(1, new PayrollDTO());
-
-        //        // Assert
-        //        Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
-        //    }
->>>>>>> f2b14790e622cdba87d50e2b907a1442acc14ca5
-
-        //    [Test]
-        //    public async Task VerifyPayroll_ValidPayrollId_ReturnsOkResult()
-        //    {
-        //        // Arrange
-        //        var payrollId = 101;
-        //        _payrollProcessorRepositoryMock.Setup(repo => repo.VerifyPayrollAsync(payrollId)).ReturnsAsync(true);
-
-        //        // Act
-        //        var result = await _payrollProcessorController.VerifyPayroll(payrollId);
-
-        //        // Assert
-        //        Assert.That(result, Is.InstanceOf<OkObjectResult>());
-        //        var okResult = result as OkObjectResult;
-        //        Assert.That(okResult?.Value, Is.EqualTo("Payroll verified successfully"));
-        //    }
-
-        //    [Test]
-        //    public async Task VerifyPayroll_InvalidPayrollId_ReturnsBadRequest()
-        //    {
-        //        // Arrange
-        //        var payrollId = 102;
-        //        _payrollProcessorRepositoryMock.Setup(repo => repo.VerifyPayrollAsync(payrollId)).ReturnsAsync(false);
-
-        //        // Act
-        //        var result = await _payrollProcessorController.VerifyPayroll(payrollId);
-
-        //        // Assert
-        //        Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
-        //        var badRequestResult = result as BadRequestObjectResult;
-        //        Assert.That(badRequestResult?.Value, Is.EqualTo("Payroll verification failed"));
-        //    }
-
-<<<<<<< HEAD
         [Test]
-        public async Task ProcessPayroll_ExceptionThrown_ReturnsBadRequest()
+        public async Task GetPayrollByEmployeeID_ReturnsOk_WhenPayrollExists()
         {
             // Arrange
             var employeeId = 1;
-            var payrollDto = new PayrollDTO();
-            //_payrollProcessorRepositoryMock
-            //    .Setup(repo => repo.ProcessPayrollAsync(employeeId, payrollDto))
-            //    .ThrowsAsync(new Exception("Processing error"));
+            var payroll = new List<Payroll> { new Payroll { EmployeeID = 1, NetPay = 5000 } };
+
+            _payrollProcessorRepositoryMock
+                .Setup(repo => repo.GetPayrollByEmployeeIdAsync(employeeId))
+                .ReturnsAsync(payroll);
 
             // Act
-            //var result = await _payrollProcessorController.ProcessPayroll(employeeId, payrollDto);
+            var result = await _controller.GetPayrollByEmployeeID(employeeId);
 
-            //// Assert
-            //Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
-            //var badRequestResult = result as BadRequestObjectResult;
-            //Assert.That(badRequestResult?.Value, Is.EqualTo("Processing error"));
+            // Assert
+            var okResult = result as OkObjectResult;
+            Assert.IsNotNull(okResult);
+            Assert.AreEqual(200, okResult.StatusCode);
+            Assert.AreEqual(payroll, okResult.Value);
         }
-=======
-        //    [Test]
-        //    public async Task ProcessPayroll_ExceptionThrown_ReturnsBadRequest()
-        //    {
-        //        // Arrange
-        //        var employeeId = 1;
-        //        var payrollDto = new PayrollDTO();
-        //        _payrollProcessorRepositoryMock
-        //            .Setup(repo => repo.ProcessPayrollAsync(employeeId, payrollDto))
-        //            .ThrowsAsync(new Exception("Processing error"));
 
-        //        // Act
-        //        var result = await _payrollProcessorController.ProcessPayroll(employeeId, payrollDto);
+        [Test]
+        public async Task GetPayrollByEmployeeID_ReturnsNotFound_WhenPayrollDoesNotExist()
+        {
+            // Arrange
+            var employeeId = 1;
 
-        //        // Assert
-        //        Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
-        //        var badRequestResult = result as BadRequestObjectResult;
-        //        Assert.That(badRequestResult?.Value, Is.EqualTo("Processing error"));
-        //    }
->>>>>>> f2b14790e622cdba87d50e2b907a1442acc14ca5
+            _payrollProcessorRepositoryMock
+                .Setup(repo => repo.GetPayrollByEmployeeIdAsync(employeeId))
+                .ReturnsAsync((List<Payroll>)null);
 
-        //    [Test]
-        //    public async Task VerifyPayroll_ExceptionThrown_ReturnsBadRequest()
-        //    {
-        //        // Arrange
-        //        var payrollId = 101;
-        //        _payrollProcessorRepositoryMock
-        //            .Setup(repo => repo.VerifyPayrollAsync(payrollId))
-        //            .ThrowsAsync(new Exception("Verification error"));
+            // Act
+            var result = await _controller.GetPayrollByEmployeeID(employeeId);
 
-        //        // Act
-        //        var result = await _payrollProcessorController.VerifyPayroll(payrollId);
+            // Assert
+            var notFoundResult = result as NotFoundObjectResult;
+            Assert.IsNotNull(notFoundResult);
+            Assert.AreEqual(404, notFoundResult.StatusCode);
+            Assert.AreEqual("Payroll not found", notFoundResult.Value);
+        }
 
-        //        // Assert
-        //        Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
-        //        var badRequestResult = result as BadRequestObjectResult;
-        //        Assert.That(badRequestResult?.Value, Is.EqualTo("Verification error"));
-        //    }
-        //}
+        #endregion
+
+        #region FetchPayrollsByPeriod
+
+        [Test]
+        public async Task FetchPayrollsByPeriod_ReturnsBadRequest_WhenStartPeriodIsLaterThanEndPeriod()
+        {
+            // Arrange
+            var startPeriod = DateTime.UtcNow;
+            var endPeriod = startPeriod.AddDays(-1);
+
+            // Act
+            var result = await _controller.FetchPayrollsByPeriod(startPeriod, endPeriod);
+
+            // Assert
+            var badRequestResult = result as BadRequestObjectResult;
+            Assert.IsNotNull(badRequestResult);
+            Assert.AreEqual(400, badRequestResult.StatusCode);
+            Assert.AreEqual("Invalid date range. StartPeriod must be earlier than EndPeriod.", badRequestResult.Value);
+        }
+
+        [Test]
+        public async Task FetchPayrollsByPeriod_ReturnsOk_WhenPayrollsExist()
+        {
+            // Arrange
+            var startPeriod = DateTime.UtcNow.AddMonths(-1);
+            var endPeriod = DateTime.UtcNow;
+            var payrolls = new List<PayrollDTO> { new PayrollDTO { EmployeeID = 1, NetPay = 5000 } };
+
+            _payrollProcessorRepositoryMock
+                .Setup(repo => repo.FetchPayrollsByPeriodAsync(startPeriod, endPeriod))
+                .ReturnsAsync(payrolls);
+
+            // Act
+            var result = await _controller.FetchPayrollsByPeriod(startPeriod, endPeriod);
+
+            // Assert
+            var okResult = result as OkObjectResult;
+            Assert.IsNotNull(okResult);
+            Assert.AreEqual(200, okResult.StatusCode);
+            Assert.AreEqual(payrolls, okResult.Value);
+        }
+
+        [Test]
+        public async Task FetchPayrollsByPeriod_ReturnsNotFound_WhenNoPayrollsExist()
+        {
+            // Arrange
+            var startPeriod = DateTime.UtcNow.AddMonths(-1);
+            var endPeriod = DateTime.UtcNow;
+            var payrolls = new List<PayrollDTO>();
+
+            _payrollProcessorRepositoryMock
+                .Setup(repo => repo.FetchPayrollsByPeriodAsync(startPeriod, endPeriod))
+                .ReturnsAsync(payrolls);
+
+            // Act
+            var result = await _controller.FetchPayrollsByPeriod(startPeriod, endPeriod);
+
+            // Assert
+            var notFoundResult = result as NotFoundObjectResult;
+            Assert.IsNotNull(notFoundResult);
+            Assert.AreEqual(404, notFoundResult.StatusCode);
+            Assert.AreEqual($"No payrolls found for the period {startPeriod:yyyy-MM-dd} to {endPeriod:yyyy-MM-dd}.", notFoundResult.Value);
+        }
+
+        #endregion
+
+        #region ProcessPayroll
+
+        [Test]
+        public async Task ProcessPayroll_ReturnsOk_WhenPayrollIsProcessedSuccessfully()
+        {
+            // Arrange
+            var payrollId = 1;
+            var payroll = new PayrollDTO { PayrollID = payrollId, NetPay = 1000 };
+
+            _payrollProcessorRepositoryMock
+                .Setup(repo => repo.ProcessPayrollByIdAsync(payrollId))
+                .ReturnsAsync(payroll);
+
+            // Act
+            var result = await _controller.ProcessPayroll(payrollId);
+
+            // Assert
+            var okResult = result as OkObjectResult;
+            Assert.IsNotNull(okResult);
+            Assert.AreEqual(200, okResult.StatusCode);
+            //Assert.AreEqual("Payroll processed successfully.", ((dynamic)okResult.Value).Message);
+        }
+
+        [Test]
+        public async Task ProcessPayroll_ReturnsNotFound_WhenPayrollDoesNotExist()
+        {
+            // Arrange
+            var payrollId = 1;
+
+            _payrollProcessorRepositoryMock
+                .Setup(repo => repo.ProcessPayrollByIdAsync(payrollId))
+                .ReturnsAsync((PayrollDTO)null);
+
+            // Act
+            var result = await _controller.ProcessPayroll(payrollId);
+
+            // Assert
+            var notFoundResult = result as NotFoundObjectResult;
+            Assert.IsNotNull(notFoundResult);
+            Assert.AreEqual(404, notFoundResult.StatusCode);
+            Assert.AreEqual($"Payroll with ID {payrollId} not found.", notFoundResult.Value);
+        }
+
+        #endregion
+
+        #region VerifyPayroll
+
+        [Test]
+        public async Task VerifyPayroll_ReturnsOk_WhenPayrollIsVerifiedSuccessfully()
+        {
+            // Arrange
+            var payrollId = 1;
+            var employee = new EmployeeDTO { FirstName = "John", LastName = "Doe", Email = "john.doe@example.com" };
+            var netPay = 1000m;
+
+            _payrollProcessorRepositoryMock
+                .Setup(repo => repo.VerifyPayrollAsync(payrollId))
+                .ReturnsAsync(true);
+
+            _payrollProcessorRepositoryMock
+                .Setup(repo => repo.GetEmployeeByPayrollIdAsync(payrollId))
+                .ReturnsAsync((employee, netPay));
+
+            _emailServiceMock
+                .Setup(service => service.SendEmailAsync(employee.Email, It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            var result = await _controller.VerifyPayroll(payrollId);
+
+            // Assert
+            var okResult = result as OkObjectResult;
+            Assert.IsNotNull(okResult);
+            Assert.AreEqual(200, okResult.StatusCode);
+            Assert.AreEqual("Payroll verified and email sent successfully.", okResult.Value);
+        }
+
+        [Test]
+        public async Task VerifyPayroll_ReturnsBadRequest_WhenPayrollVerificationFails()
+        {
+            // Arrange
+            var payrollId = 1;
+
+            _payrollProcessorRepositoryMock
+                .Setup(repo => repo.VerifyPayrollAsync(payrollId))
+                .ReturnsAsync(false);
+
+            // Act
+            var result = await _controller.VerifyPayroll(payrollId);
+
+            // Assert
+            var badRequestResult = result as BadRequestObjectResult;
+            Assert.IsNotNull(badRequestResult);
+            Assert.AreEqual(400, badRequestResult.StatusCode);
+            Assert.AreEqual("Payroll verification failed", badRequestResult.Value);
+        }
+
+        #endregion
     }
 }

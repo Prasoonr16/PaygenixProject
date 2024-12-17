@@ -35,73 +35,7 @@ namespace NewPayGenixAPI.Controllers
             _adminRepository = adminRepository;
         }
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterDTO registerDto)
-        {
-            try {
-                // Validate RoleID
-                var role = await _context.Roles.FindAsync(registerDto.RoleID);
-                if (role == null)
-                {
-                    return BadRequest("Invalid RoleID.");
-                }
-
-                // Create a new User object
-                var newUser = new User
-                {
-                    Username = registerDto.Username,
-                    PasswordHash = registerDto.Password,
-                    RoleID = registerDto.RoleID,
-                    CreatedDate = DateTime.UtcNow,
-                };
-
-                // Save the user to the database
-                await _context.Users.AddAsync(newUser);
-                await _context.SaveChangesAsync();
-
-                // If the user is registering as an Employee, add details to the Employees table
-                if (registerDto.RoleID == 2 && registerDto.EmployeeDetails != null)
-                {
-                    var employeeDto = registerDto.EmployeeDetails;
-
-                    // Validate required employee-specific details
-                    if (string.IsNullOrWhiteSpace(employeeDto.FirstName) || string.IsNullOrWhiteSpace(employeeDto.LastName))
-                    {
-                        return BadRequest("FirstName and LastName are required for employees.");
-                    }
-                    
-                 
-                    var newEmployee = new Employee
-                    {
-                        UserID = newUser.UserID, // Link to the newly created user
-                        FirstName = employeeDto.FirstName,
-                        LastName = employeeDto.LastName,
-                        Email = employeeDto.Email,
-                        PhoneNumber = employeeDto.PhoneNumber,
-                        Department = employeeDto.Department,
-                        Position = employeeDto.Position,
-                        ActiveStatus = employeeDto.ActiveStatus,
-                        HireDate = DateTime.UtcNow,
-                    };
-
-                    await _context.Employees.AddAsync(newEmployee);
-                    await _context.SaveChangesAsync();
-                }
-
-
-                return Ok("User registered successfully and your userID is : " + newUser.UserID);
-            }
-            catch (DbUpdateException dbEx)
-            {
-                _logger.Error($"Database error occurred while registering user: {dbEx.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while registering the user.");
-            }
-            catch (Exception ex)
-            {
-                _logger.Error($"An error occurred while registering user: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred.");
-            }
-        }
+       
 
             [HttpPost("login")]
             public async Task<IActionResult> Login([FromBody] LoginDTO loginDto)

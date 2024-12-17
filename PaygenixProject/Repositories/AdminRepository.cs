@@ -120,10 +120,10 @@ namespace NewPayGenixAPI.Repositories
             return await _context.ComplianceReports.ToListAsync();
         }
 
-        public async Task<bool> UpdateComplianceReportAsync(int employeeId, ComplianceReportDTO updateDTO)
+        public async Task<bool> UpdateComplianceReportAsync(int reportId, ComplianceReportDTO reportDTO)
         {
             // Find the compliance report for the given EmployeeID
-            var report = await _context.ComplianceReports.FirstOrDefaultAsync(r => r.EmployeeID == employeeId);
+            var report = await _context.ComplianceReports.FirstOrDefaultAsync(r => r.ReportID == reportId);
 
             if (report == null)
             {
@@ -131,19 +131,20 @@ namespace NewPayGenixAPI.Repositories
             }
 
             // Update the fields based on the DTO
-            report.ReportDate = DateTime.Now;
-            report.ComplianceStatus = updateDTO.ComplianceStatus;
-            report.ResolvedStatus = updateDTO.ResolvedStatus;
+            
+            report.ComplianceStatus = reportDTO.ComplianceStatus;
+            report.ResolvedStatus = reportDTO.ResolvedStatus;
 
 
             // Save changes to the database
+
             _context.ComplianceReports.Update(report);
+
             await _context.SaveChangesAsync();
 
             return true; // Update successful
         }
 
-        //--------------------------------------------------------------------//
 
         public async Task<IEnumerable<AuditTrail>> GetAllAuditTrailsAsync()
         {

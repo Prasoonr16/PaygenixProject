@@ -25,7 +25,6 @@ namespace NewPayGenixAPI.Repositories
 
         Task<bool> UpdateComplianceReportAsync(int employeeId, ComplianceReportDTO updateDTO);
 
-        //------------------------------------------------------------//
         Task<IEnumerable<AuditTrail>> GetAllAuditTrailsAsync();
         Task<IEnumerable<AuditTrail>> SearchAuditTrailsAsync(string searchTerm, DateTime? startDate, DateTime? endDate);
         Task LogAuditTrailAsync(AuditTrail auditTrail);

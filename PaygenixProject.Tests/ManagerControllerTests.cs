@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NewPayGenixAPI.Controllers;
+using NewPayGenixAPI.DTO;
 using NewPayGenixAPI.Models;
 using NewPayGenixAPI.Repositories;
 using NUnit.Framework;
@@ -16,102 +17,174 @@ namespace PaygenixProject.Tests
     public class ManagerControllerTests
     {
         private Mock<IManagerRepository> _managerRepositoryMock;
-        private Mock<IAdminRepository> _adminRepositoryMock;
-        private ManagerController _managerController;
+        private ManagerController _controller;
 
         [SetUp]
-        public void SetUp()
+        public void Setup()
         {
             _managerRepositoryMock = new Mock<IManagerRepository>();
-            _managerController = new ManagerController(_managerRepositoryMock.Object);
+            _controller = new ManagerController(_managerRepositoryMock.Object);
         }
 
+        #region UpdateLeaveRequestStatus Tests
+
         [Test]
-        public async Task GetTeamPayrolls_ReturnsOkResult_WithPayrolls()
+        public async Task UpdateLeaveRequestStatus_ReturnsOk_WhenStatusIsValid()
         {
             // Arrange
-            var payrolls = new List<Payroll>
-        {
-            new Payroll { PayrollID = 1, EmployeeID = 1, NetPay = 50000, StartPeriod = DateTime.UtcNow.AddMonths(-1), EndPeriod = DateTime.UtcNow },
-            new Payroll { PayrollID = 2, EmployeeID = 2, NetPay = 60000, StartPeriod = DateTime.UtcNow.AddMonths(-1), EndPeriod = DateTime.UtcNow }
-        };
-            _managerRepositoryMock.Setup(repo => repo.GetTeamPayrollsAsync()).ReturnsAsync(payrolls);
+            int leaveRequestId = 1;
+            string status = "Approved";
+
+            _managerRepositoryMock
+                .Setup(repo => repo.UpdateLeaveRequestStatusAsync(leaveRequestId, status))
+                .Returns(Task.CompletedTask);
 
             // Act
-            var result = await _managerController.GetTeamPayrolls();
+            var result = await _controller.UpdateLeaveRequestStatus(leaveRequestId, status);
 
             // Assert
-            Assert.That(result, Is.InstanceOf<OkObjectResult>());
             var okResult = result as OkObjectResult;
-            Assert.That(okResult?.Value, Is.EqualTo(payrolls));
+            Assert.IsNotNull(okResult);
+            Assert.AreEqual(200, okResult.StatusCode);
+            Assert.AreEqual($"Leave request {leaveRequestId} status updated to {status}.", okResult.Value);
         }
 
         [Test]
-        public async Task GetLeaveRequestsByEmployeeId_ValidId_ReturnsOkResult()
+        public async Task UpdateLeaveRequestStatus_ReturnsBadRequest_WhenStatusIsInvalid()
         {
             // Arrange
-            var leaveRequests = new List<LeaveRequest>
-        {
-            new LeaveRequest { LeaveRequestID = 1, EmployeeID = 1, Status = "Pending" },
-            new LeaveRequest { LeaveRequestID = 2, EmployeeID = 1, Status = "Approved" }
-        };
-            _managerRepositoryMock.Setup(repo => repo.GetLeaveRequestsByEmployeeIdAsync(1)).ReturnsAsync(leaveRequests);
+            int leaveRequestId = 1;
+            string invalidStatus = "Pending";
 
             // Act
-            var result = await _managerController.GetLeaveRequestsByEmployeeId(1);
+            var result = await _controller.UpdateLeaveRequestStatus(leaveRequestId, invalidStatus);
 
             // Assert
-            Assert.That(result, Is.InstanceOf<OkObjectResult>());
-            var okResult = result as OkObjectResult;
-            Assert.That(okResult?.Value, Is.EqualTo(leaveRequests));
-        }
-
-        [Test]
-        public async Task GetLeaveRequestsByEmployeeId_NoLeaveRequests_ReturnsNotFound()
-        {
-            // Arrange
-            _managerRepositoryMock.Setup(repo => repo.GetLeaveRequestsByEmployeeIdAsync(1)).ReturnsAsync(new List<LeaveRequest>());
-
-            // Act
-            var result = await _managerController.GetLeaveRequestsByEmployeeId(1);
-
-            // Assert
-            Assert.That(result, Is.InstanceOf<NotFoundObjectResult>());
-            var notFoundResult = result as NotFoundObjectResult;
-            Assert.That(notFoundResult?.Value, Is.EqualTo("No leave requests found for this employee."));
-        }
-
-        [Test]
-        public async Task UpdateLeaveRequestStatus_ValidStatus_ReturnsOkResult()
-        {
-            // Arrange
-            var leaveRequestId = 1;
-            var status = "Approved";
-            _managerRepositoryMock.Setup(repo => repo.UpdateLeaveRequestStatusAsync(leaveRequestId, status)).Returns(Task.CompletedTask);
-
-            // Act
-            var result = await _managerController.UpdateLeaveRequestStatus(leaveRequestId, status);
-
-            // Assert
-            Assert.That(result, Is.InstanceOf<OkObjectResult>());
-            var okResult = result as OkObjectResult;
-            Assert.That(okResult?.Value, Is.EqualTo($"Leave request {leaveRequestId} status updated to {status}."));
-        }
-
-        [Test]
-        public async Task UpdateLeaveRequestStatus_InvalidStatus_ReturnsBadRequest()
-        {
-            // Arrange
-            var leaveRequestId = 1;
-            var status = "InvalidStatus";
-
-            // Act
-            var result = await _managerController.UpdateLeaveRequestStatus(leaveRequestId, status);
-
-            // Assert
-            Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
             var badRequestResult = result as BadRequestObjectResult;
-            Assert.That(badRequestResult?.Value, Is.EqualTo("Invalid status. Valid values are: Approved, Rejected."));
+            Assert.IsNotNull(badRequestResult);
+            Assert.AreEqual(400, badRequestResult.StatusCode);
+            Assert.AreEqual("Invalid status. Valid values are: Approved, Rejected.", badRequestResult.Value);
         }
+
+        [Test]
+        public async Task UpdateLeaveRequestStatus_ReturnsInternalServerError_WhenExceptionOccurs()
+        {
+            // Arrange
+            int leaveRequestId = 1;
+            string status = "Approved";
+
+            _managerRepositoryMock
+                .Setup(repo => repo.UpdateLeaveRequestStatusAsync(leaveRequestId, status))
+                .ThrowsAsync(new Exception("Database error"));
+
+            // Act
+            var result = await _controller.UpdateLeaveRequestStatus(leaveRequestId, status);
+
+            // Assert
+            var objectResult = result as ObjectResult;
+            Assert.IsNotNull(objectResult);
+            Assert.AreEqual(500, objectResult.StatusCode);
+            Assert.AreEqual($"Internal server error: Database error", objectResult.Value);
+        }
+
+        #endregion
+
+        #region GetPayrollsByManager Tests
+
+        [Test]
+        public async Task GetPayrollsByManager_ReturnsOk_WhenPayrollsExist()
+        {
+            // Arrange
+            int managerUserId = 1;
+            var payrolls = new List<PayrollDTO>
+            {
+                new PayrollDTO { PayrollID = 1, EmployeeID = 1, NetPay = 5000 },
+                new PayrollDTO { PayrollID = 2, EmployeeID = 2, NetPay = 6000 }
+            };
+
+            _managerRepositoryMock
+                .Setup(repo => repo.GetPayrollsByManagerAsync(managerUserId))
+                .ReturnsAsync(payrolls);
+
+            // Act
+            var result = await _controller.GetPayrollsByManager(managerUserId);
+
+            // Assert
+            var okResult = result as OkObjectResult;
+            Assert.IsNotNull(okResult);
+            Assert.AreEqual(200, okResult.StatusCode);
+            Assert.AreEqual(payrolls, okResult.Value);
+        }
+
+        [Test]
+        public async Task GetPayrollsByManager_ReturnsInternalServerError_WhenExceptionOccurs()
+        {
+            // Arrange
+            int managerUserId = 1;
+
+            _managerRepositoryMock
+                .Setup(repo => repo.GetPayrollsByManagerAsync(managerUserId))
+                .ThrowsAsync(new Exception("Database error"));
+
+            // Act
+            var result = await _controller.GetPayrollsByManager(managerUserId);
+
+            // Assert
+            var objectResult = result as ObjectResult;
+            Assert.IsNotNull(objectResult);
+            Assert.AreEqual(500, objectResult.StatusCode);
+            Assert.AreEqual($"Internal server error: Database error", objectResult.Value);
+        }
+
+        #endregion
+
+        #region GetLeaveRequestsByManager Tests
+
+        [Test]
+        public async Task GetLeaveRequestsByManager_ReturnsOk_WhenLeaveRequestsExist()
+        {
+            // Arrange
+            int managerUserId = 1;
+            var leaveRequests = new List<LeaveRequestDTO>
+            {
+                new LeaveRequestDTO { LeaveRequestID = 1, EmployeeID = 1, Status = "Pending" },
+                new LeaveRequestDTO { LeaveRequestID = 2, EmployeeID = 2, Status = "Approved" }
+            };
+
+            _managerRepositoryMock
+                .Setup(repo => repo.GetLeaveRequestsByManagerAsync(managerUserId))
+                .ReturnsAsync(leaveRequests);
+
+            // Act
+            var result = await _controller.GetLeaveRequestsByManager(managerUserId);
+
+            // Assert
+            var okResult = result as OkObjectResult;
+            Assert.IsNotNull(okResult);
+            Assert.AreEqual(200, okResult.StatusCode);
+            Assert.AreEqual(leaveRequests, okResult.Value);
+        }
+
+        [Test]
+        public async Task GetLeaveRequestsByManager_ReturnsInternalServerError_WhenExceptionOccurs()
+        {
+            // Arrange
+            int managerUserId = 1;
+
+            _managerRepositoryMock
+                .Setup(repo => repo.GetLeaveRequestsByManagerAsync(managerUserId))
+                .ThrowsAsync(new Exception("Database error"));
+
+            // Act
+            var result = await _controller.GetLeaveRequestsByManager(managerUserId);
+
+            // Assert
+            var objectResult = result as ObjectResult;
+            Assert.IsNotNull(objectResult);
+            Assert.AreEqual(500, objectResult.StatusCode);
+            Assert.AreEqual($"Internal server error: Database error", objectResult.Value);
+        }
+
+        #endregion
     }
 }
