@@ -46,7 +46,6 @@ namespace NewPayGenixAPI.Models
         public User User { get; set; }
         public ICollection<Payroll> Payrolls { get; set; } //one to many relationship
         public ICollection<LeaveRequest> LeaveRequests { get; set; }
-        public ICollection<EmployeeBenefit> EmployeeBenefits { get; set; }
     }
 }
 

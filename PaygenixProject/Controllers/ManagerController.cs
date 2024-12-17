@@ -19,27 +19,27 @@ namespace NewPayGenixAPI.Controllers
         }
 
         // Review Team Payrolls
-        [HttpGet("team-payrolls")]
-        public async Task<IActionResult> GetTeamPayrolls()
-        {
-            var payrolls = await _managerRepository.GetTeamPayrollsAsync();
-            return Ok(payrolls);
-        }
+        //[HttpGet("team-payrolls")]
+        //public async Task<IActionResult> GetTeamPayrolls()
+        //{
+        //    var payrolls = await _managerRepository.GetTeamPayrollsAsync();
+        //    return Ok(payrolls);
+        //}
 
-       [HttpGet("employee/{employeeId}/leave-requests")]
-        public async Task<IActionResult> GetLeaveRequestsByEmployeeId(int employeeId)
-        {
-            try
-            {
-                var leaveRequests = await _managerRepository.GetLeaveRequestsByEmployeeIdAsync(employeeId);
-                if (!leaveRequests.Any()) return NotFound("No leave requests found for this employee.");
-                return Ok(leaveRequests);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
+       //[HttpGet("employee/{employeeId}/leave-requests")]
+       // public async Task<IActionResult> GetLeaveRequestsByEmployeeId(int employeeId)
+       // {
+       //     try
+       //     {
+       //         var leaveRequests = await _managerRepository.GetLeaveRequestsByEmployeeIdAsync(employeeId);
+       //         if (!leaveRequests.Any()) return NotFound("No leave requests found for this employee.");
+       //         return Ok(leaveRequests);
+       //     }
+       //     catch (Exception ex)
+       //     {
+       //         return StatusCode(500, $"Internal server error: {ex.Message}");
+       //     }
+       // }
 
         [HttpPut("leave-request/{leaveRequestId}/update-status")]
         public async Task<IActionResult> UpdateLeaveRequestStatus(int leaveRequestId, [FromQuery] string status)
@@ -61,24 +61,24 @@ namespace NewPayGenixAPI.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-        [HttpGet("leave-requests")]
-        public async Task<IActionResult> GetAllLeaveRequests()
-        {
-            try
-            {
-                // Fetch all leave requests from the repository
-                var leaveRequests = await _managerRepository.GetAllLeaveRequestsAsync();
+        //[HttpGet("leave-requests")]
+        //public async Task<IActionResult> GetAllLeaveRequests()
+        //{
+        //    try
+        //    {
+        //        // Fetch all leave requests from the repository
+        //        var leaveRequests = await _managerRepository.GetAllLeaveRequestsAsync();
 
-                if (!leaveRequests.Any())
-                    return NotFound("No leave requests found.");
+        //        if (!leaveRequests.Any())
+        //            return NotFound("No leave requests found.");
 
-                return Ok(leaveRequests);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
+        //        return Ok(leaveRequests);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"Internal server error: {ex.Message}");
+        //    }
+        //}
 
         
         //API for getting the payroll and leave request

@@ -36,17 +36,6 @@ namespace NewPayGenixAPI.Data
                 .WithMany(e => e.LeaveRequests)
                 .HasForeignKey(l => l.EmployeeID);
 
-            //Employee and EmployeeBenefit (One-to-Many)
-            modelBuilder.Entity<EmployeeBenefit>()
-                .HasOne(eb => eb.Employee)
-                .WithMany(e => e.EmployeeBenefits)
-                .HasForeignKey(eb => eb.EmployeeID);
-
-            //Benefit and EmployeeBenefit (One-to-Many)
-            modelBuilder.Entity<EmployeeBenefit>()
-                .HasOne(eb => eb.Benefit)
-                .WithMany(b => b.EmployeeBenefits)
-                .HasForeignKey(eb => eb.BenefitID);
 
             //ComplainceReport and Employee (One-to-Many)
             modelBuilder.Entity<ComplianceReport>()
@@ -71,8 +60,6 @@ namespace NewPayGenixAPI.Data
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Payroll> Payrolls { get; set; }
         public DbSet<LeaveRequest> LeaveRequests { get; set; }
-        public DbSet<Benefit> Benefits { get; set; }
-        public DbSet<EmployeeBenefit> EmployeeBenefits { get; set; }
         public DbSet<ComplianceReport> ComplianceReports { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
 
