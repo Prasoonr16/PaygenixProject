@@ -127,6 +127,9 @@ namespace PaygenixProject.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int?>("ManagerUserID")
+                        .HasColumnType("int");
+
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasMaxLength(10)
@@ -141,6 +144,8 @@ namespace PaygenixProject.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("EmployeeID");
+
+                    b.HasIndex("ManagerUserID");
 
                     b.HasIndex("UserID")
                         .IsUnique()
@@ -399,9 +404,15 @@ namespace PaygenixProject.Migrations
 
             modelBuilder.Entity("NewPayGenixAPI.Models.Employee", b =>
                 {
+                    b.HasOne("NewPayGenixAPI.Models.User", "Manager")
+                        .WithMany()
+                        .HasForeignKey("ManagerUserID");
+
                     b.HasOne("NewPayGenixAPI.Models.User", "User")
                         .WithOne("Employee")
                         .HasForeignKey("NewPayGenixAPI.Models.Employee", "UserID");
+
+                    b.Navigation("Manager");
 
                     b.Navigation("User");
                 });

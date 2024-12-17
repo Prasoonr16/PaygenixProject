@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NewPayGenixAPI.Controllers;
+using NewPayGenixAPI.Data;
 using NewPayGenixAPI.DTO;
 using NewPayGenixAPI.Models;
 using NewPayGenixAPI.Repositories;
@@ -18,13 +19,15 @@ namespace PaygenixProject.Tests
         private Mock<IAdminRepository> _adminRepositoryMock;
         private Mock<EmailService> _emailServiceMock;
         private AdminController _adminController;
+        private Mock<PaygenixDBContext> _contextMock;
 
         [SetUp]
         public void SetUp()
         {
             _adminRepositoryMock = new Mock<IAdminRepository>();
             _emailServiceMock = new Mock<EmailService>();
-            _adminController = new AdminController(_adminRepositoryMock.Object, _emailServiceMock.Object);
+            _contextMock = new Mock<PaygenixDBContext>();
+            _adminController = new AdminController(_adminRepositoryMock.Object, _emailServiceMock.Object, _contextMock.Object);
         }
 
         [Test]

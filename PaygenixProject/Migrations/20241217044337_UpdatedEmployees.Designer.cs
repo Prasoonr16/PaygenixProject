@@ -12,8 +12,8 @@ using NewPayGenixAPI.Data;
 namespace PaygenixProject.Migrations
 {
     [DbContext(typeof(PaygenixDBContext))]
-    [Migration("20241215191245_latestchanges")]
-    partial class latestchanges
+    [Migration("20241217044337_UpdatedEmployees")]
+    partial class UpdatedEmployees
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -130,6 +130,9 @@ namespace PaygenixProject.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int?>("ManagerUserID")
+                        .HasColumnType("int");
+
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasMaxLength(10)
@@ -144,6 +147,8 @@ namespace PaygenixProject.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("EmployeeID");
+
+                    b.HasIndex("ManagerUserID");
 
                     b.HasIndex("UserID")
                         .IsUnique()
@@ -402,9 +407,15 @@ namespace PaygenixProject.Migrations
 
             modelBuilder.Entity("NewPayGenixAPI.Models.Employee", b =>
                 {
+                    b.HasOne("NewPayGenixAPI.Models.User", "Manager")
+                        .WithMany()
+                        .HasForeignKey("ManagerUserID");
+
                     b.HasOne("NewPayGenixAPI.Models.User", "User")
                         .WithOne("Employee")
                         .HasForeignKey("NewPayGenixAPI.Models.Employee", "UserID");
+
+                    b.Navigation("Manager");
 
                     b.Navigation("User");
                 });
